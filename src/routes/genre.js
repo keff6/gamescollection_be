@@ -1,14 +1,14 @@
 const express = require('express')
 const { body, validationResult } = require('express-validator');
-const GendersService = require('../services/genders')
+const GenresService = require('../services/genres')
 const router = new express.Router()
 
 
-router.get('/genders', async (req, res) => {
+router.get('/genres', async (req, res) => {
   try {
-    const gendersService = new GendersService()
-    const genders = await gendersService.getAll()
-    res.send(genders)
+    const genresService = new GenresService()
+    const genres = await genresService.getAll()
+    res.send(genres)
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
@@ -18,14 +18,14 @@ router.get('/genders', async (req, res) => {
 // TODO: Add update route
 
 // TODO: Add add route
-router.post('/genders/add', body('name').notEmpty(), async (req, res) => {
+router.post('/genres/add', body('name').notEmpty(), async (req, res) => {
   try {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) throw new Error("Something went wrong!");
-    const gendersService = new GendersService()
-    const gender = await gendersService.add(req.body)
-    res.send(gender)
+    const genresService = new GenresService()
+    const message = await genresService.add(req.body)
+    res.send(message)
   } catch(error) {
     console.log(error)
     res.status(500).send(error)

@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require('body-parser')
-const genderRoutes = require('./routes/gender');
+const genreRoutes = require('./routes/genre');
 const manufacturerRoutes = require('./routes/manufacturer');
 const consoleRoutes = require('./routes/console');
 const gameRoutes = require('./routes/game');
@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 // routes
-app.use(genderRoutes);
+app.use(genreRoutes);
 app.use(manufacturerRoutes);
 app.use(consoleRoutes);
 app.use(gameRoutes);

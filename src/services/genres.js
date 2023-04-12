@@ -1,10 +1,10 @@
 const dbConnection = require("../utils/db");
 const { v4: uuidv4 } = require('uuid');
 
-class GendersService {
+class GenresService {
 
-  async add(genderObj) {
-    const insertQuery =  `INSERT INTO gender(id, name) values('${uuidv4()}', '${genderObj.name}')`;
+  async add(genreObj) {
+    const insertQuery =  `INSERT INTO genre(id, name) values('${uuidv4()}', '${genreObj.name}')`;
     
     try {
       await dbConnection.query(insertQuery);
@@ -15,18 +15,18 @@ class GendersService {
     
   }
 
-  async update(genderObj) {
+  async update(genreObj) {
     // TODO: update videogame gender
     return true;
   }
 
-  async remove(genderObj) {
+  async remove(genreObj) {
     // TODO: remove videogame gender
     return true;
   }
 
   async getAll() {
-    const selectQuery = 'SELECT * FROM gender';
+    const selectQuery = 'SELECT * FROM genre';
 
     try {
       const rows = await dbConnection.query(selectQuery);
@@ -39,4 +39,4 @@ class GendersService {
 
 }
 
-module.exports = GendersService
+module.exports = GenresService
