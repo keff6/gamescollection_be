@@ -19,8 +19,15 @@
   },
   "homepage": "https://github.com/keff6/gamescollection_be#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
-    "mysql": "^2.18.1"
+    "express-myconnection": "^1.0.4",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.15.0",
+    "method-override": "^3.0.0",
+    "mysql": "^2.18.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
