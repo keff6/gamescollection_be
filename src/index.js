@@ -7,16 +7,10 @@ const gameRoutes = require('./routes/game');
 
 const app = express()
 
-const port = 3080
+const port = 3030
 
 app.use(express.json())
 
-
-/**
- * bodyParser.urlencoded() parses the text as URL encoded data 
- * (which is how browsers tend to send form data from regular forms set to POST) 
- * and exposes the resulting object (containing the keys and values) on req. body.
- */ 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
