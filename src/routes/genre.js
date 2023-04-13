@@ -18,6 +18,21 @@ router.get('/genres', async (req, res) => {
 })
 
 /**
+ *  GET GENRE BY ID
+ */
+router.get('/genres/:id', async (req, res) => {
+  try {
+    const { params: { id: genreId }} = req;
+    const genresService = new GenresService()
+    const genre = await genresService.getById(genreId)
+    res.send(genre)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
  *  UPDATE GENRE
  */
 router.put('/genres/edit/:id', body('newName').notEmpty(), async (req, res) => {

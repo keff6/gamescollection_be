@@ -62,6 +62,22 @@ class GenresService {
     
   }
 
+  /**
+   *  GET GENRE BY ID
+   */
+  async getById(genreId) {
+    const selectQuery = `SELECT * FROM genre WHERE id = '${genreId}'`;
+
+    try {
+      const result = await dbConnection.query(selectQuery);
+      const genre = result[0]
+      return genre || {};
+    } catch(err) {
+      throw new Error(err.messsage);
+    } 
+    
+  }
+
 }
 
 module.exports = GenresService

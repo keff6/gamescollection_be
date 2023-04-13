@@ -62,6 +62,22 @@ const insertQuery =  `INSERT INTO manufacturer(id, name, origin) values('${uuidv
     
   }
 
+  /**
+   *  GET MANUFACTURER BI ID
+   */
+  async getById(manufacturerId) {
+    const selectQuery = `SELECT * FROM manufacturer WHERE id = '${manufacturerId}'`;
+
+    try {
+      const result = await dbConnection.query(selectQuery);
+      const manufacturer = result[0];
+      return manufacturer || {};
+    } catch(err) {
+      throw new Error(err.messsage);
+    } 
+    
+  }
+
 }
 
 module.exports = ManufacturersService

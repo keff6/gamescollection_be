@@ -18,6 +18,21 @@ router.get('/manufacturers', async (req, res) => {
 })
 
 /**
+ *  GET MANUFACTURER BY ID
+ */
+router.get('/manufacturers/:id', async (req, res) => {
+  try {
+    const { params: { id: manufacturerId }} = req;
+    const manufacturersService = new ManufacturersService()
+    const manufacturer = await manufacturersService.getById(manufacturerId)
+    res.send(manufacturer)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
  *  UPDATE MANUFACTURER
  */
 router.put('/manufacturers/edit/:id', body('newName').notEmpty(), async (req, res) => {
