@@ -33,6 +33,23 @@ router.get('/manufacturers/:id', async (req, res) => {
 })
 
 /**
+ *  ADD MANUFACTURER
+ */
+router.post('/manufacturers/add', body('name').notEmpty(), async (req, res) => {
+  try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) throw new Error("Something went wrong!");
+    const manufacturersService = new ManufacturersService()
+    const message = await manufacturersService.add(req.body)
+    res.send(message)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
  *  UPDATE MANUFACTURER
  */
 router.put('/manufacturers/edit/:id', body('newName').notEmpty(), async (req, res) => {
@@ -44,23 +61,6 @@ router.put('/manufacturers/edit/:id', body('newName').notEmpty(), async (req, re
     const { params: { id: manufacturerId }} = req;
     const manufacturersService = new ManufacturersService()
     const message = await manufacturersService.update(manufacturerId, req.body)
-    res.send(message)
-  } catch(error) {
-    console.log(error)
-    res.status(500).send(error)
-  }
-})
-
-/**
- *  ADD MANUFACTURER
- */
-router.post('/manufacturers/add', body('name').notEmpty(), async (req, res) => {
-  try {
-    const errors = validationResult(req)
-
-    if (!errors.isEmpty()) throw new Error("Something went wrong!");
-    const manufacturersService = new ManufacturersService()
-    const message = await manufacturersService.add(req.body)
     res.send(message)
   } catch(error) {
     console.log(error)

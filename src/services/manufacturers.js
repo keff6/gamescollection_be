@@ -6,7 +6,7 @@ class ManufacturersService {
    *  ADD MANUFACTURER
    */
   async add(manufacturerObj) {
-const insertQuery =  `INSERT INTO manufacturer(id, name, origin) values('${uuidv4()}', '${manufacturerObj.name}', '${manufacturerObj.origin || ""}')`;
+    const insertQuery =  `INSERT INTO manufacturer(id, name, origin) values('${uuidv4()}', '${manufacturerObj.name}', '${manufacturerObj.origin || ""}')`;
     
     try {
       await dbConnection.query(insertQuery);
