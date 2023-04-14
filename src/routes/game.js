@@ -18,6 +18,28 @@ router.get('/games', async (req, res) => {
 })
 
 /**
+ *  SEARCH GAMES MULTI PARAMETER
+ */
+router.get('/games/search', async (req, res) => {
+  const { query: searchParamsObj } = req
+  const params =  Object.keys(searchParamsObj);
+
+  if(params.length === 0) {
+    res.status(400).send("No search params provided!")
+    return
+  }
+
+  try {
+    const gamesService = new GamesService()
+    const games = await gamesService.search(searchParamsObj)
+    res.send(games)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
  *  ADD GAME
  */
 router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty()],
@@ -70,5 +92,39 @@ router.delete('/games/remove/:id', async (req, res) => {
     res.status(500).send(error)
   }
 })
+
+
+/**
+ *  GET GAME BY ID
+ */
+router.get('/games/:id', async (req, res) => {
+  try {
+    const { params: { id: gameId }} = req;
+    const gamesService = new GamesService()
+    const game = await gamesService.getById(gameId)
+    res.send(game)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
+ *  GET GAMES BY CONSOLE
+ */
+router.get('/games/console/:id', async (req, res) => {
+  try {
+    const { params: { id: consoleId }} = req;
+    const gamesService = new GamesService()
+    const games = await gamesService.getByConsole(consoleId)
+    res.send(games)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+
+
 
 module.exports = router
