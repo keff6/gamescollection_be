@@ -86,5 +86,34 @@ router.delete('/consoles/remove/:id', async (req, res) => {
   }
 })
 
+  /**
+   *  GET CONSOLES BY MANUFACTURER
+   */
+  router.get('/consoles/maker/:id', async (req, res) => {
+    try {
+      const { params: { id: manufacturerId }} = req;
+      const consolesService = new ConsolesService()
+      const consoles = await consolesService.getByManufacturer(manufacturerId)
+      res.send(consoles)
+    } catch(error) {
+      console.log(error)
+      res.status(500).send(error)
+    }
+  })
+
+  /**
+   *  GET CONSOLES BY GENERATION
+   */
+  router.get('/consoles/generation/:gen', async (req, res) => {
+    try {
+      const { params: { gen: generation }} = req;
+      const consolesService = new ConsolesService()
+      const consoles = await consolesService.getByGeneration(generation)
+      res.send(consoles)
+    } catch(error) {
+      console.log(error)
+      res.status(500).send(error)
+    }
+  })
 
 module.exports = router

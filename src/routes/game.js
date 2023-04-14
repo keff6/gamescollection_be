@@ -1,52 +1,71 @@
 const express = require('express')
+const { body, validationResult } = require('express-validator')
 const GamesService = require('../services/games')
 const router = new express.Router()
 
-// Get games by console
-router.get('/consolesByManufacturer', async (req, res) => {
+/**
+ *  GET ALL GAMES
+ */
+router.get('/games', async (req, res) => {
   try {
-    res.send("TODO: Get all consoles by manufacturer")
+    const gamesService = new GamesService()
+    const games = await gamesService.getAll()
+    res.send(games)
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
   }
 })
 
-// Get games by saga
-router.get('/consolesByManufacturer', async (req, res) => {
-  try {
-    res.send("TODO: Get all consoles by manufacturer")
-  } catch(error) {
-    console.log(error)
-    res.status(500).send(error)
-  }
+/**
+ *  ADD GAME
+ */
+router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty()],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+
+      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+
+      const gamesService = new GamesService()
+      const message = await gamesService.add(req.body)
+      res.send(message)
+    } catch(error) {
+      console.log(error)
+      res.status(500).send(error)
+    }
 })
 
-// Get games by year
-router.get('/consolesByManufacturer', async (req, res) => {
-  try {
-    res.send("TODO: Get all consoles by manufacturer")
-  } catch(error) {
-    console.log(error)
-    res.status(500).send(error)
-  }
+/**
+ *  UPDATE GAME
+ */
+router.put('/games/edit/:id', [body('title').notEmpty(), body('idConsole').notEmpty()],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+
+      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+
+      const { params: { id: gameId }} = req;
+      const gamesService = new GamesService()
+      const message = await gamesService.update(gameId, req.body)
+      res.send(message)
+    } catch(error) {
+      console.log(error)
+      res.status(500).send(error)
+    }
 })
 
-// Get games by gender
-router.get('/consolesByManufacturer', async (req, res) => {
+/**
+ *  REMOVE GAME
+ */
+router.delete('/games/remove/:id', async (req, res) => {
   try {
-    res.send("TODO: Get all consoles by manufacturer")
-  } catch(error) {
-    console.log(error)
-    res.status(500).send(error)
-  }
-})
-
-// Search games by title
-router.get('/consolesByManufacturer', async (req, res) => {
-  try {
-    res.send("TODO: Get all consoles by manufacturer")
-  } catch(error) {
+    const { params: { id: gameId }} = req;
+    const gamesService = new GamesService()
+    const message = await gamesService.remove(gameId)
+    res.send(message)
+  } catch (error) {
     console.log(error)
     res.status(500).send(error)
   }

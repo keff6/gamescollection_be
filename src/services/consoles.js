@@ -68,7 +68,6 @@ class ConsolesService {
         generation = '${consoleObj.generation || ""}'
       WHERE id = '${consoleId}'`;
     
-      console.log({updateQuery})
     try {
       await dbConnection.query(updateQuery);
       return "Updated succesfully!";
@@ -90,6 +89,36 @@ class ConsolesService {
     } catch(err) {
       throw new Error(err.messsage);
     } 
+  }
+
+  /**
+   *  GET CONSOLES BY MANUFACTURER
+   */
+  async getByManufacturer(manufacturerId) {
+    const selectQuery = `SELECT * FROM console WHERE id_manufacturer = '${manufacturerId}'`;
+
+    try {
+      const consoles = await dbConnection.query(selectQuery);
+      return consoles;
+    } catch(err) {
+      throw new Error(err.messsage);
+    } 
+    
+  }
+
+  /**
+   *  GET CONSOLES BY GENERATION
+   */
+  async getByGeneration(generation) {
+    const selectQuery = `SELECT * FROM console WHERE generation = '${generation}'`;
+
+    try {
+      const consoles = await dbConnection.query(selectQuery);
+      return consoles;
+    } catch(err) {
+      throw new Error(err.messsage);
+    } 
+    
   }
 
 }
