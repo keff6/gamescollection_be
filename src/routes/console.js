@@ -40,7 +40,10 @@ router.post('/consoles/add', [body('name').notEmpty(), body('idManufacturer').no
     try {
       const errors = validationResult(req)
 
-      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+      if (!errors.isEmpty()) {
+        res.status(400).send("Invalid object!")
+        return
+      }
 
       const consolesService = new ConsolesService()
       const message = await consolesService.add(req.body)
@@ -59,7 +62,11 @@ router.put('/consoles/edit/:id', [body('name').notEmpty(), body('idManufacturer'
     try {
       const errors = validationResult(req)
 
-      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+      if (!errors.isEmpty()) {
+        res.status(400).send("Invalid object!")
+        return
+      }
+      
 
       const { params: { id: consoleId }} = req;
       const consolesService = new ConsolesService()

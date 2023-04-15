@@ -47,7 +47,10 @@ router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty(
     try {
       const errors = validationResult(req)
 
-      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+      if (!errors.isEmpty()) {
+        res.status(400).send("Invalid object!")
+        return
+      }
 
       const gamesService = new GamesService()
       const message = await gamesService.add(req.body)
@@ -66,7 +69,10 @@ router.put('/games/edit/:id', [body('title').notEmpty(), body('idConsole').notEm
     try {
       const errors = validationResult(req)
 
-      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+      if (!errors.isEmpty()) {
+        res.status(400).send("Invalid object!")
+        return
+      }
 
       const { params: { id: gameId }} = req;
       const gamesService = new GamesService()
