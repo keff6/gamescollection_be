@@ -40,7 +40,10 @@ router.post('/consoles/add', [body('name').notEmpty(), body('idManufacturer').no
     try {
       const errors = validationResult(req)
 
-      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+      if (!errors.isEmpty()) {
+        res.status(400).send("Invalid object!")
+        return
+      }
 
       const consolesService = new ConsolesService()
       const message = await consolesService.add(req.body)
@@ -59,7 +62,11 @@ router.put('/consoles/edit/:id', [body('name').notEmpty(), body('idManufacturer'
     try {
       const errors = validationResult(req)
 
-      if (!errors.isEmpty()) throw new Error("Something went wrong!");
+      if (!errors.isEmpty()) {
+        res.status(400).send("Invalid object!")
+        return
+      }
+      
 
       const { params: { id: consoleId }} = req;
       const consolesService = new ConsolesService()
@@ -86,5 +93,34 @@ router.delete('/consoles/remove/:id', async (req, res) => {
   }
 })
 
+  /**
+   *  GET CONSOLES BY MANUFACTURER
+   */
+  router.get('/consoles/maker/:id', async (req, res) => {
+    try {
+      const { params: { id: manufacturerId }} = req;
+      const consolesService = new ConsolesService()
+      const consoles = await consolesService.getByManufacturer(manufacturerId)
+      res.send(consoles)
+    } catch(error) {
+      console.log(error)
+      res.status(500).send(error)
+    }
+  })
+
+  /**
+   *  GET CONSOLES BY GENERATION
+   */
+  router.get('/consoles/generation/:gen', async (req, res) => {
+    try {
+      const { params: { gen: generation }} = req;
+      const consolesService = new ConsolesService()
+      const consoles = await consolesService.getByGeneration(generation)
+      res.send(consoles)
+    } catch(error) {
+      console.log(error)
+      res.status(500).send(error)
+    }
+  })
 
 module.exports = router

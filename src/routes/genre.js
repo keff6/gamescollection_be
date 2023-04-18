@@ -33,13 +33,37 @@ router.get('/genres/:id', async (req, res) => {
 })
 
 /**
+ *  ADD GENRE
+ */
+router.post('/genres/add', body('name').notEmpty(), async (req, res) => {
+  try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      res.status(400).send("Invalid object!")
+      return
+    }
+
+    const genresService = new GenresService()
+    const message = await genresService.add(req.body)
+    res.send(message)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
  *  UPDATE GENRE
  */
 router.put('/genres/edit/:id', body('newName').notEmpty(), async (req, res) => {
   try {
     const errors = validationResult(req)
 
-    if (!errors.isEmpty()) throw new Error("Something went wrong!");
+    if (!errors.isEmpty()) {
+      res.status(400).send("Invalid object!")
+      return
+    }
 
     const { params: { id: genreId }} = req;
     const genresService = new GenresService()
@@ -51,22 +75,7 @@ router.put('/genres/edit/:id', body('newName').notEmpty(), async (req, res) => {
   }
 })
 
-/**
- *  ADD GENRE
- */
-router.post('/genres/add', body('name').notEmpty(), async (req, res) => {
-  try {
-    const errors = validationResult(req)
 
-    if (!errors.isEmpty()) throw new Error("Something went wrong!");
-    const genresService = new GenresService()
-    const message = await genresService.add(req.body)
-    res.send(message)
-  } catch(error) {
-    console.log(error)
-    res.status(500).send(error)
-  }
-})
 
 /**
  *  REMOVE GENRE

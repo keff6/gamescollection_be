@@ -39,7 +39,11 @@ router.post('/manufacturers/add', body('name').notEmpty(), async (req, res) => {
   try {
     const errors = validationResult(req)
 
-    if (!errors.isEmpty()) throw new Error("Something went wrong!");
+    if (!errors.isEmpty()) {
+      res.status(400).send("Invalid object!")
+      return
+    }
+    
     const manufacturersService = new ManufacturersService()
     const message = await manufacturersService.add(req.body)
     res.send(message)
@@ -56,7 +60,10 @@ router.put('/manufacturers/edit/:id', body('newName').notEmpty(), async (req, re
   try {
     const errors = validationResult(req)
 
-    if (!errors.isEmpty()) throw new Error("Something went wrong!");
+    if (!errors.isEmpty()) {
+      res.status(400).send("Invalid object!")
+      return
+    }
 
     const { params: { id: manufacturerId }} = req;
     const manufacturersService = new ManufacturersService()
