@@ -18,6 +18,22 @@ router.get('/games', async (req, res) => {
 })
 
 /**
+ *  GET GAMES BY PARAM [console, year, genre, saga]
+ */
+router.get('/games/get', async (req, res) => {
+  const { query: getParamsObj } = req
+
+  try {
+    const gamesService = new GamesService()
+    const games = await gamesService.getByParams(getParamsObj)
+    res.send(games)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
  *  SEARCH GAMES MULTI PARAMETER
  */
 router.get('/games/search', async (req, res) => {
@@ -115,20 +131,7 @@ router.get('/games/:id', async (req, res) => {
   }
 })
 
-/**
- *  GET GAMES BY CONSOLE
- */
-router.get('/games/console/:id', async (req, res) => {
-  try {
-    const { params: { id: consoleId }} = req;
-    const gamesService = new GamesService()
-    const games = await gamesService.getByConsole(consoleId)
-    res.send(games)
-  } catch(error) {
-    console.log(error)
-    res.status(500).send(error)
-  }
-})
+
 
 
 

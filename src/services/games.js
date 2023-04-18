@@ -144,16 +144,44 @@ class GamesService {
    *  GET GAMES BY CONSOLE
    */
   async getByConsole(consoleId) {
-    const selectQuery = `SELECT * FROM game WHERE id_console = '${consoleId}'`;
+    const selectQuery = `call GET_GAMES('${consoleId}', null, null, null)`;
 
     try {
       const games = await dbConnection.query(selectQuery);
-      return games;
+      return games && games[0] || [];
     } catch(err) {
       throw new Error(err.messsage);
     } 
     
   }
+
+
+    /**
+   *  GET GAMES BY PARAMS [console, year, genre, saga]
+   *  call GET_GAMES(idConsole, year, genre, saga);
+   */
+    async getByParams(paramsObj) {
+      const {
+        console = '',
+        year = '',
+        genre =  '',
+        saga =  '',
+      } = paramsObj;
+
+      const selectQuery = `call GET_GAMES(
+        ${console ? "'" + console + "'" : null},
+        ${year ? "'" + year + "'" : null},
+        ${genre ? "'" + genre + "'" : null},
+        ${saga ? "'" + saga + "'" : null})`;
+  
+      try {
+        const games = await dbConnection.query(selectQuery);
+        return games && games[0] || [];
+      } catch(err) {
+        throw new Error(err.messsage);
+      } 
+      
+    }
 
   /**
  *  SEARCH GAMES MULTI PARAMETER
