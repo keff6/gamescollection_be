@@ -21,10 +21,12 @@ class GamesService {
    *  ADD GAME
    */
   async add(gameObj) {
+    const newGameId = uuidv4();
+
     const insertQuery =  `
       INSERT INTO game(id, title, id_console, saga, year, is_new, is_complete, notes)
       values(
-        '${uuidv4()}',
+        '${newGameId}',
         '${gameObj.title}',
         '${gameObj.idConsole}',
         '${gameObj.saga || "[]"}',
@@ -33,11 +35,30 @@ class GamesService {
         '${gameObj.isComplete || 0}',
         '${gameObj.notes || ""}'
       )`;
+    
+    const gameGenres = gameObj.genres && JSON.parse(gameObj.genres) || []
 
     try {
-      await dbConnection.query(insertQuery);
+      // SET SQL transaction
+      await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+      // begin transaction
+      await dbConnection.beginTransaction();
+
+      await dbConnection.execute(insertQuery);
+
+      if (gameGenres.length > 0) {
+        for(let genreId of gameGenres) {
+          await dbConnection.execute(`INSERT INTO game_x_genre (id_game, id_genre) VALUES ('${newGameId}', '${genreId}')`);
+        }
+      }
+
+      // commit transaction
+      await dbConnection.commit();
+
       return "Added succesfully!";
     } catch(err) {
+      dbConnection.rollback();
       throw new Error(err.messsage);
     } 
     
@@ -57,11 +78,33 @@ class GamesService {
         is_complete = '${gameObj.isComplete || 0}',
         notes = '${gameObj.notes || ""}'
       WHERE id = '${gameId}'`;
+
+    const gameGenres = gameObj.genres && JSON.parse(gameObj.genres) || []
+
     
     try {
-      await dbConnection.query(updateQuery);
+      // SET SQL transaction
+      await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+      // begin transaction
+      await dbConnection.beginTransaction();
+
+      await dbConnection.execute(updateQuery);
+      await dbConnection.execute(`DELETE FROM game_x_genre where id_game = '${gameId}'`)
+
+      if (gameGenres.length > 0) {
+        for(let genreId of gameGenres) {
+          await dbConnection.execute(`INSERT INTO game_x_genre (id_game, id_genre) VALUES ('${gameId}', '${genreId}')`);
+        }
+      }
+
+      // commit transaction
+      await dbConnection.commit();
+
       return "Updated succesfully!";
     } catch(err) {
+      console.log(err.message)
+      dbConnection.rollback();
       throw new Error(err.messsage);
     } 
     
