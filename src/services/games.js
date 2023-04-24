@@ -184,19 +184,11 @@ class GamesService {
     }
 
   /**
- *  SEARCH GAMES MULTI PARAMETER
+ *  SEARCH GAMES BY TITLE
  */
-  async search(searchParamsObj) {
-
-    const paramBuilder = [];
-
-    for(let param in searchParamsObj){
-      paramBuilder.push(`${param} = '${searchParamsObj[param]}'`)
-    }
-
-    const paramsString = paramBuilder.join(' AND ')
-
-    const selectQuery = `SELECT * FROM game WHERE ${paramsString}`;
+  async search(title) {
+    const selectQuery = `SELECT * FROM game
+      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%${title}%', ' ', ''))`;
 
     try {
       const games = await dbConnection.query(selectQuery);

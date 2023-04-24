@@ -34,7 +34,7 @@ router.get('/games/get', async (req, res) => {
 })
 
 /**
- *  SEARCH GAMES MULTI PARAMETER
+ *  SEARCH GAMES BY TITLE
  */
 router.get('/games/search', async (req, res) => {
   const { query: searchParamsObj } = req
@@ -45,9 +45,11 @@ router.get('/games/search', async (req, res) => {
     return
   }
 
+  const { title } = searchParamsObj;
+
   try {
     const gamesService = new GamesService()
-    const games = await gamesService.search(searchParamsObj)
+    const games = await gamesService.search(title)
     res.send(games)
   } catch(error) {
     console.log(error)
