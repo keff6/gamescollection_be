@@ -144,31 +144,51 @@ class GamesService {
    *  GET GAMES BY CONSOLE
    */
   async getByConsole(consoleId) {
-    const selectQuery = `SELECT * FROM game WHERE id_console = '${consoleId}'`;
+    const selectQuery = `call GET_GAMES('${consoleId}', null, null, null)`;
 
     try {
       const games = await dbConnection.query(selectQuery);
-      return games;
+      return games && games[0] || [];
     } catch(err) {
       throw new Error(err.messsage);
     } 
     
   }
 
-  /**
- *  SEARCH GAMES MULTI PARAMETER
- */
-  async search(searchParamsObj) {
 
-    const paramBuilder = [];
+    /**
+   *  GET GAMES BY PARAMS [console, year, genre, saga]
+   *  call GET_GAMES(idConsole, year, genre, saga);
+   */
+    async getByParams(paramsObj) {
+      const {
+        console = '',
+        year = '',
+        genre =  '',
+        saga =  '',
+      } = paramsObj;
 
-    for(let param in searchParamsObj){
-      paramBuilder.push(`${param} = '${searchParamsObj[param]}'`)
+      const selectQuery = `call GET_GAMES(
+        ${console ? "'" + console + "'" : null},
+        ${year ? "'" + year + "'" : null},
+        ${genre ? "'" + genre + "'" : null},
+        ${saga ? "'" + saga + "'" : null})`;
+  
+      try {
+        const games = await dbConnection.query(selectQuery);
+        return games && games[0] || [];
+      } catch(err) {
+        throw new Error(err.messsage);
+      } 
+      
     }
 
-    const paramsString = paramBuilder.join(' AND ')
-
-    const selectQuery = `SELECT * FROM game WHERE ${paramsString}`;
+  /**
+ *  SEARCH GAMES BY TITLE
+ */
+  async search(title) {
+    const selectQuery = `SELECT * FROM game
+      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%${title}%', ' ', ''))`;
 
     try {
       const games = await dbConnection.query(selectQuery);
