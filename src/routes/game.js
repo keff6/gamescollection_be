@@ -72,7 +72,7 @@ router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty(
 
       const gamesService = new GamesService()
       const message = await gamesService.add(req.body)
-      res.send(message)
+      res.status(201).send(message)
     } catch(error) {
       console.log(error)
       res.status(500).send(error)

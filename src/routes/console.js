@@ -47,7 +47,7 @@ router.post('/consoles/add', [body('name').notEmpty(), body('idManufacturer').no
 
       const consolesService = new ConsolesService()
       const message = await consolesService.add(req.body)
-      res.send(message)
+      res.status(201).send(message)
     } catch(error) {
       console.log(error)
       res.status(500).send(error)

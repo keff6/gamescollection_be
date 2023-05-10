@@ -46,7 +46,7 @@ router.post('/manufacturers/add', body('name').notEmpty(), async (req, res) => {
     
     const manufacturersService = new ManufacturersService()
     const message = await manufacturersService.add(req.body)
-    res.send(message)
+    res.status(201).send(message)
   } catch(error) {
     console.log(error)
     res.status(500).send(error)

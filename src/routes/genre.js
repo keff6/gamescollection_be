@@ -10,7 +10,7 @@ router.get('/genres', async (req, res) => {
   try {
     const genresService = new GenresService()
     const genres = await genresService.getAll()
-    res.send(genres)
+    res.send({genres})
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
@@ -46,7 +46,7 @@ router.post('/genres/add', body('name').notEmpty(), async (req, res) => {
 
     const genresService = new GenresService()
     const message = await genresService.add(req.body)
-    res.send(message)
+    res.status(201).send(message)
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
