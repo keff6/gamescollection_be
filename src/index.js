@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const genreRoutes = require('./routes/genre');
-const manufacturerRoutes = require('./routes/manufacturer');
+const brandRoutes = require('./routes/brand');
 const consoleRoutes = require('./routes/console');
 const gameRoutes = require('./routes/game');
 
@@ -18,7 +18,7 @@ app.use(bodyParser.json())
 
 // routes
 app.use(genreRoutes);
-app.use(manufacturerRoutes);
+app.use(brandRoutes);
 app.use(consoleRoutes);
 app.use(gameRoutes);
 

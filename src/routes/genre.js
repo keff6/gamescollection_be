@@ -56,7 +56,7 @@ router.post('/genres/add', body('name').notEmpty(), async (req, res) => {
 /**
  *  UPDATE GENRE
  */
-router.put('/genres/edit/:id', body('newName').notEmpty(), async (req, res) => {
+router.put('/genres/edit/:id', body('updatedName').notEmpty(), async (req, res) => {
   try {
     const errors = validationResult(req)
 

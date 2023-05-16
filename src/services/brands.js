@@ -1,12 +1,12 @@
 const dbConnection = require("../utils/db");
 const { v4: uuidv4 } = require('uuid');
 
-class ManufacturersService {
+class BrandsService {
   /**
-   *  ADD MANUFACTURER
+   *  ADD BRAND
    */
-  async add(manufacturerObj) {
-    const insertQuery =  `INSERT INTO manufacturer(id, name, origin) values('${uuidv4()}', '${manufacturerObj.name}', '${manufacturerObj.origin || ""}')`;
+  async add(brandObj) {
+    const insertQuery =  `INSERT INTO brand(id, name, origin) values('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}')`;
     
     try {
       await dbConnection.query(insertQuery);
@@ -18,10 +18,10 @@ class ManufacturersService {
   }
 
   /**
-   *  UPDATE MANUFACTURER
+   *  UPDATE BRAND
    */
-  async update(manufacturerId, manufacturerObj) {
-    const updateQuery = `UPDATE manufacturer SET name = '${manufacturerObj.newName}', origin = '${manufacturerObj.newOrigin || ""}' where id = '${manufacturerId}'`;
+  async update(brandId, brandObj) {
+    const updateQuery = `UPDATE brand SET name = '${brandObj.newName}', origin = '${brandObj.newOrigin || ""}' where id = '${brandId}'`;
 
     try {
       await dbConnection.query(updateQuery);
@@ -32,10 +32,10 @@ class ManufacturersService {
   }
 
   /**
-   *  REMOVE MANUFACTURER
+   *  REMOVE BRAND
    */
-  async remove(manufacturerId) {
-    const removeQuery = `DELETE FROM manufacturer where id = '${manufacturerId}'`;
+  async remove(brandId) {
+    const removeQuery = `DELETE FROM brand where id = '${brandId}'`;
 
     // TODO: sub routine to also delete all lines on game_x_genre table
 
@@ -48,10 +48,10 @@ class ManufacturersService {
   }
   
   /**
-   *  GET ALL MANUFACTURERS
+   *  GET ALL BRANDS
    */
   async getAll() {
-    const selectQuery = 'SELECT * FROM manufacturer';
+    const selectQuery = 'SELECT * FROM brand';
 
     try {
       const rows = await dbConnection.query(selectQuery);
@@ -63,15 +63,15 @@ class ManufacturersService {
   }
 
   /**
-   *  GET MANUFACTURER BI ID
+   *  GET BRAND BI ID
    */
-  async getById(manufacturerId) {
-    const selectQuery = `SELECT * FROM manufacturer WHERE id = '${manufacturerId}'`;
+  async getById(brandId) {
+    const selectQuery = `SELECT * FROM brand WHERE id = '${brandId}'`;
 
     try {
       const result = await dbConnection.query(selectQuery);
-      const manufacturer = result[0];
-      return manufacturer || {};
+      const brand = result[0];
+      return brand || {};
     } catch(err) {
       throw new Error(err.messsage);
     } 
@@ -80,4 +80,4 @@ class ManufacturersService {
 
 }
 
-module.exports = ManufacturersService
+module.exports = BrandsService
