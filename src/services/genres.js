@@ -21,7 +21,7 @@ class GenresService {
    *  UPDATE GENRE
    */
   async update(genreId, genreObj) {
-    const updateQuery = `UPDATE genre SET name = '${genreObj.newName}' where id = '${genreId}'`;
+    const updateQuery = `UPDATE genre SET name = '${genreObj.updatedName}' where id = '${genreId}'`;
 
     try {
       await dbConnection.query(updateQuery);
@@ -51,7 +51,7 @@ class GenresService {
    *  GET ALL GENRES
    */
   async getAll() {
-    const selectQuery = 'SELECT * FROM genre';
+    const selectQuery = 'SELECT id,name FROM genre ORDER BY name ASC';
 
     try {
       const rows = await dbConnection.query(selectQuery);
@@ -66,7 +66,7 @@ class GenresService {
    *  GET GENRE BY ID
    */
   async getById(genreId) {
-    const selectQuery = `SELECT * FROM genre WHERE id = '${genreId}'`;
+    const selectQuery = `SELECT id,name FROM genre WHERE id = '${genreId}'`;
 
     try {
       const result = await dbConnection.query(selectQuery);
