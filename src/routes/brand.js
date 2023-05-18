@@ -10,7 +10,7 @@ router.get('/brands', async (req, res) => {
   try {
     const brandsService = new BrandsService()
     const brands = await brandsService.getAll()
-    res.send(brands)
+    res.send({brands})
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
@@ -56,7 +56,7 @@ router.post('/brands/add', body('name').notEmpty(), async (req, res) => {
 /**
  *  UPDATE BRAND
  */
-router.put('/brands/edit/:id', body('newName').notEmpty(), async (req, res) => {
+router.put('/brands/edit/:id', body('name').notEmpty(), async (req, res) => {
   try {
     const errors = validationResult(req)
 

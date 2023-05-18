@@ -6,7 +6,9 @@ class BrandsService {
    *  ADD BRAND
    */
   async add(brandObj) {
-    const insertQuery =  `INSERT INTO brand(id, name, origin) values('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}')`;
+    const insertQuery =  `INSERT INTO
+      brand(id, name, origin, logourl)
+      values('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logourl || ""}')`;
     
     try {
       await dbConnection.query(insertQuery);
@@ -21,7 +23,12 @@ class BrandsService {
    *  UPDATE BRAND
    */
   async update(brandId, brandObj) {
-    const updateQuery = `UPDATE brand SET name = '${brandObj.newName}', origin = '${brandObj.newOrigin || ""}' where id = '${brandId}'`;
+    const updateQuery = `UPDATE brand
+      SET
+        name = '${brandObj.name}',
+        origin = '${brandObj.origin || ""}',
+        logourl = '${brandObj.logourl || ""}'
+      WHERE id = '${brandId}'`;
 
     try {
       await dbConnection.query(updateQuery);
@@ -51,7 +58,7 @@ class BrandsService {
    *  GET ALL BRANDS
    */
   async getAll() {
-    const selectQuery = 'SELECT * FROM brand';
+    const selectQuery = 'SELECT id, name, origin, logourl FROM brand';
 
     try {
       const rows = await dbConnection.query(selectQuery);
@@ -66,7 +73,7 @@ class BrandsService {
    *  GET BRAND BI ID
    */
   async getById(brandId) {
-    const selectQuery = `SELECT * FROM brand WHERE id = '${brandId}'`;
+    const selectQuery = `SELECT id, name, origin, logourl FROM brand WHERE id = '${brandId}'`;
 
     try {
       const result = await dbConnection.query(selectQuery);
