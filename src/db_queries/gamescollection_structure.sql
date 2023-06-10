@@ -23,7 +23,7 @@ CREATE TABLE `gamescollection`.`console` (
 		ON DELETE CASCADE
 );
 
-CREATE TABLE `genre` (
+CREATE TABLE `gamescollection`.`genre` (
   `id` varchar(36) NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`));

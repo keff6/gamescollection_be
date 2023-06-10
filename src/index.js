@@ -6,9 +6,10 @@ const brandRoutes = require('./routes/brand');
 const consoleRoutes = require('./routes/console');
 const gameRoutes = require('./routes/game');
 
+
 const app = express()
 
-const port = 3030
+const port = process.env.PORT || 3030;
 
 app.use(express.json())
 app.use(cors())
