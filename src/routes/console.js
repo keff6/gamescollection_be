@@ -1,6 +1,7 @@
 const express = require('express')
 const { body, validationResult } = require('express-validator');
 const ConsolesService = require('../services/consoles')
+const { consolesDataSanitizer } = require('../utils/responseSanitizer');
 const router = new express.Router()
 
 /**
@@ -10,7 +11,8 @@ router.get('/consoles', async (req, res) => {
   try {
     const consolesService = new ConsolesService()
     const consoles = await consolesService.getAll()
-    res.send(consoles)
+    consolesDataSanitizer(consoles)
+    res.send({consoles})
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
@@ -35,7 +37,7 @@ router.get('/consoles/:id', async (req, res) => {
 /**
  *  ADD CONSOLE
  */
-router.post('/consoles/add', [body('name').notEmpty(), body('idManufacturer').notEmpty()],
+router.post('/consoles/add', [body('name').notEmpty(), body('brandId').notEmpty()],
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -57,7 +59,7 @@ router.post('/consoles/add', [body('name').notEmpty(), body('idManufacturer').no
 /**
  *  UPDATE CONSOLE
  */
-router.put('/consoles/edit/:id', [body('name').notEmpty(), body('idManufacturer').notEmpty()],
+router.put('/consoles/edit/:id', [body('name').notEmpty(), body('brandId').notEmpty()],
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -66,7 +68,6 @@ router.put('/consoles/edit/:id', [body('name').notEmpty(), body('idManufacturer'
         res.status(400).send("Invalid object!")
         return
       }
-      
 
       const { params: { id: consoleId }} = req;
       const consolesService = new ConsolesService()
@@ -94,14 +95,15 @@ router.delete('/consoles/remove/:id', async (req, res) => {
 })
 
   /**
-   *  GET CONSOLES BY MANUFACTURER
+   *  GET CONSOLES BY BRAND
    */
-  router.get('/consoles/maker/:id', async (req, res) => {
+  router.get('/consoles/brand/:id', async (req, res) => {
     try {
-      const { params: { id: manufacturerId }} = req;
+      const { params: { id: brandId }} = req;
       const consolesService = new ConsolesService()
-      const consoles = await consolesService.getByManufacturer(manufacturerId)
-      res.send(consoles)
+      const consoles = await consolesService.getByBrand(brandId)
+      consolesDataSanitizer(consoles)
+      res.send({consoles})
     } catch(error) {
       console.log(error)
       res.status(500).send(error)
@@ -116,6 +118,7 @@ router.delete('/consoles/remove/:id', async (req, res) => {
       const { params: { gen: generation }} = req;
       const consolesService = new ConsolesService()
       const consoles = await consolesService.getByGeneration(generation)
+      consolesDataSanitizer(consoles)
       res.send(consoles)
     } catch(error) {
       console.log(error)
