@@ -6,7 +6,20 @@ class GamesService {
    *  GET ALL GAMES
    */
   async getAll() {
-    const selectQuery = `SELECT * FROM game`;
+    const selectQuery = `SELECT
+        id,
+        title,
+        id_console,
+        saga,
+        year,
+        developer,
+        publisher,
+        is_new,
+        is_complete,
+        is_wishlist,
+        notes,
+        coverurl
+      FROM game`;
 
     try {
       const consoles = await dbConnection.query(selectQuery);
@@ -24,15 +37,18 @@ class GamesService {
     const newGameId = uuidv4();
 
     const insertQuery =  `
-      INSERT INTO game(id, title, id_console, saga, year, is_new, is_complete, notes)
+      INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, notes)
       values(
         '${newGameId}',
         '${gameObj.title}',
         '${gameObj.idConsole}',
         '${gameObj.saga || "[]"}',
         '${gameObj.year || ""}',
+        '${gameObj.developer || ""}',
+        '${gameObj.publisher || ""}',
         '${gameObj.isNew || 0}',
         '${gameObj.isComplete || 0}',
+        '${gameObj.isWishlist || 0}',
         '${gameObj.notes || ""}'
       )`;
     
@@ -74,8 +90,11 @@ class GamesService {
         id_console = '${gameObj.idConsole}',
         saga = '${gameObj.saga || "[]"}',
         year = '${gameObj.year || ""}',
+        developer = '${gameObj.developer || ""}',
+        publisher = '${gameObj.publisher || ""}',
         is_new = '${gameObj.isNew || 0}',
         is_complete = '${gameObj.isComplete || 0}',
+        is_wishlist = '${gameObj.isWishlist || 0}',
         notes = '${gameObj.notes || ""}'
       WHERE id = '${gameId}'`;
 
@@ -128,7 +147,20 @@ class GamesService {
    *  GET GAME BY ID
    */
   async getById(gameId) {
-    const selectQuery = `SELECT * FROM game WHERE id = '${gameId}'`;
+    const selectQuery = `SELECT
+        id,
+        title,
+        id_console,
+        saga,
+        year,
+        developer,
+        publisher,
+        is_new,
+        is_complete,
+        is_wishlist,
+        notes,
+        coverurl
+    FROM game WHERE id = '${gameId}'`;
 
     try {
       const result = await dbConnection.query(selectQuery);
@@ -157,37 +189,53 @@ class GamesService {
 
 
     /**
-   *  GET GAMES BY PARAMS [console, year, genre, saga]
-   *  call GET_GAMES(idConsole, year, genre, saga);
+   *  GET GAMES BY PARAMS [console, year, genre, saga, initialLetter, sortBy]
+   *  call GET_GAMES(idConsole, year, genre, saga, initialLetter, sortBy);
    */
     async getByParams(paramsObj) {
+      
       const {
-        console = '',
+        idConsole = '',
         year = '',
         genre =  '',
         saga =  '',
+        initialLetter = '',
+        sortBy = '',
       } = paramsObj;
 
       const selectQuery = `call GET_GAMES(
-        ${console ? "'" + console + "'" : null},
+        ${idConsole ? "'" + idConsole + "'" : null},
         ${year ? "'" + year + "'" : null},
         ${genre ? "'" + genre + "'" : null},
-        ${saga ? "'" + saga + "'" : null})`;
+        ${saga ? "'" + saga + "'" : null},
+        ${initialLetter ? "'" + initialLetter + "'" : "''"},
+        ${sortBy ? "'" + sortBy + "'" : null})`;
   
       try {
         const games = await dbConnection.query(selectQuery);
         return games && games[0] || [];
       } catch(err) {
         throw new Error(err.messsage);
-      } 
-      
+      }
     }
 
   /**
  *  SEARCH GAMES BY TITLE
  */
   async search(title) {
-    const selectQuery = `SELECT * FROM game
+    const selectQuery = `SELECT
+        id,
+        title,
+        id_console,
+        saga,
+        year,
+        developer,
+        publisher,
+        is_new,
+        is_complete,
+        notes,
+        coverurl
+      FROM game
       WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%${title}%', ' ', ''))`;
 
     try {

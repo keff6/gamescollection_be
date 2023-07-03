@@ -9,6 +9,15 @@ const consolesDataSanitizer = (consoles) => {
     })
 }
 
+const gamesDataSanitizer = (games) => {
+  return games.map(g => {
+    if(JSON.stringify(g.genres) === '[null]') {
+      g.genres = []
+    }
+  })
+}
+
 module.exports = {
   consolesDataSanitizer,
+  gamesDataSanitizer,
 }
