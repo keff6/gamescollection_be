@@ -39,6 +39,7 @@ CREATE TABLE `gamescollection`.`game` (
   `is_new` TINYINT NULL,
   `is_complete` TINYINT NULL,
   `is_wishlist` TINYINT NULL,
+  `is_digital` TINYINT NULL,
   `notes` TINYTEXT NULL,
   `coverurl` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),

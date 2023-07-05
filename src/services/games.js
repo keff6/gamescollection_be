@@ -17,6 +17,7 @@ class GamesService {
         is_new,
         is_complete,
         is_wishlist,
+        is_digital,
         notes,
         coverurl
       FROM game`;
@@ -37,11 +38,11 @@ class GamesService {
     const newGameId = uuidv4();
 
     const insertQuery =  `
-      INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, notes)
+      INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, notes, coverurl)
       values(
         '${newGameId}',
         '${gameObj.title}',
-        '${gameObj.idConsole}',
+        '${gameObj.consoleId}',
         '${gameObj.saga || "[]"}',
         '${gameObj.year || ""}',
         '${gameObj.developer || ""}',
@@ -49,10 +50,12 @@ class GamesService {
         '${gameObj.isNew || 0}',
         '${gameObj.isComplete || 0}',
         '${gameObj.isWishlist || 0}',
-        '${gameObj.notes || ""}'
+        '${gameObj.isDigital || 0}',
+        '${gameObj.notes || ""}',
+        '${gameObj.coverUrl || ""}'
       )`;
     
-    const gameGenres = gameObj.genres && JSON.parse(gameObj.genres) || []
+    const gameGenres = gameObj.genres || []
 
     try {
       // SET SQL transaction
@@ -87,7 +90,7 @@ class GamesService {
     const updateQuery =  `
       UPDATE game
         SET title = '${gameObj.title}',
-        id_console = '${gameObj.idConsole}',
+        id_console = '${gameObj.consoleId}',
         saga = '${gameObj.saga || "[]"}',
         year = '${gameObj.year || ""}',
         developer = '${gameObj.developer || ""}',
@@ -95,10 +98,12 @@ class GamesService {
         is_new = '${gameObj.isNew || 0}',
         is_complete = '${gameObj.isComplete || 0}',
         is_wishlist = '${gameObj.isWishlist || 0}',
-        notes = '${gameObj.notes || ""}'
+        is_digital = '${gameObj.isDigital|| 0}',
+        notes = '${gameObj.notes || ""}',
+        coverurl = '${gameObj.coverUrl || ""}'
       WHERE id = '${gameId}'`;
 
-    const gameGenres = gameObj.genres && JSON.parse(gameObj.genres) || []
+    const gameGenres = gameObj.genres || []
 
     
     try {
@@ -158,6 +163,7 @@ class GamesService {
         is_new,
         is_complete,
         is_wishlist,
+        id_digital,
         notes,
         coverurl
     FROM game WHERE id = '${gameId}'`;

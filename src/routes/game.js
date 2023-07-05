@@ -63,7 +63,7 @@ router.get('/games/search', async (req, res) => {
 /**
  *  ADD GAME
  */
-router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty()],
+router.post('/games/add', [body('title').notEmpty(), body('consoleId').notEmpty()],
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -85,7 +85,7 @@ router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty(
 /**
  *  UPDATE GAME
  */
-router.put('/games/edit/:id', [body('title').notEmpty(), body('idConsole').notEmpty()],
+router.put('/games/edit/:id', [body('title').notEmpty(), body('consoleId').notEmpty()],
   async (req, res) => {
     try {
       const errors = validationResult(req)

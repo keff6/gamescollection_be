@@ -10,7 +10,7 @@ CREATE PROCEDURE GET_GAMES (
 BEGIN
 	IF genre IS NOT NULL THEN
 		SELECT T1.* FROM (
-			SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres
+			SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.is_digital, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres, g.coverurl
 			FROM game AS g LEFT JOIN game_x_genre AS gxg ON g.id = gxg.id_game
 			WHERE g.id_console = COALESCE(idConsole, g.id_console)
 				AND g.year = COALESCE(null, g.year)
@@ -25,7 +25,7 @@ BEGIN
         WHERE JSON_CONTAINS(T1.genres, CONCAT('\"', genre, '\"'));
 	ELSEIF saga IS NOT NULL THEN
 		SELECT T1.* FROM (
-			SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres
+			SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.is_digital, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres, g.coverurl
 			FROM game AS g LEFT JOIN game_x_genre AS gxg ON g.id = gxg.id_game
 			WHERE g.id_console = COALESCE(idConsole, g.id_console)
 				AND g.year = COALESCE(null, g.year)
@@ -39,7 +39,7 @@ BEGIN
 		) AS T1
 		WHERE JSON_SEARCH(T1.saga, 'one', CONCAT('%', saga ,'%')) <> '';
     ELSE
-		SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres
+		SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.is_digital, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres, g.coverurl
 		FROM game AS g LEFT JOIN game_x_genre AS gxg ON g.id = gxg.id_game
 		WHERE g.id_console = COALESCE(idConsole, g.id_console)
 			AND g.year = COALESCE(null, g.year)
