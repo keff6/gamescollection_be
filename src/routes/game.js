@@ -1,6 +1,7 @@
 const express = require('express')
 const { body, validationResult } = require('express-validator')
 const GamesService = require('../services/games')
+const { gamesDataSanitizer } = require('../utils/responseSanitizer');
 const router = new express.Router()
 
 /**
@@ -10,7 +11,8 @@ router.get('/games', async (req, res) => {
   try {
     const gamesService = new GamesService()
     const games = await gamesService.getAll()
-    res.send(games)
+    gamesDataSanitizer(games);
+    res.send({games})
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
@@ -18,15 +20,16 @@ router.get('/games', async (req, res) => {
 })
 
 /**
- *  GET GAMES BY PARAM [console, year, genre, saga]
+ *  GET GAMES BY PARAM [console, year, genre, saga, initialLetter, sortBy]
  */
 router.get('/games/get', async (req, res) => {
-  const { query: getParamsObj } = req
+  const { query: getParamsObj } = req;
 
   try {
     const gamesService = new GamesService()
     const games = await gamesService.getByParams(getParamsObj)
-    res.send(games)
+    gamesDataSanitizer(games);
+    res.send({games})
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
@@ -60,7 +63,7 @@ router.get('/games/search', async (req, res) => {
 /**
  *  ADD GAME
  */
-router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty()],
+router.post('/games/add', [body('title').notEmpty(), body('consoleId').notEmpty()],
   async (req, res) => {
     try {
       const errors = validationResult(req)
@@ -82,7 +85,7 @@ router.post('/games/add', [body('title').notEmpty(), body('idConsole').notEmpty(
 /**
  *  UPDATE GAME
  */
-router.put('/games/edit/:id', [body('title').notEmpty(), body('idConsole').notEmpty()],
+router.put('/games/edit/:id', [body('title').notEmpty(), body('consoleId').notEmpty()],
   async (req, res) => {
     try {
       const errors = validationResult(req)

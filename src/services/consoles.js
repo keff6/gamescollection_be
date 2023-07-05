@@ -21,7 +21,15 @@ class ConsolesService {
    *  GET CONSOLE BY ID
    */
   async getById(consoleId) {
-    const selectQuery = `SELECT * FROM console WHERE id = '${consoleId}'`;
+    const selectQuery = `SELECT
+      id,
+      name,
+      id_brand,
+      year,
+      generation,
+      logourl,
+      consoleurl
+    FROM console WHERE id = '${consoleId}'`;
 
     try {
       const result = await dbConnection.query(selectQuery);
@@ -38,13 +46,15 @@ class ConsolesService {
    */
   async add(consoleObj) {
     const insertQuery =  `
-      INSERT INTO console(id, name, id_manufacturer, year, generation)
+      INSERT INTO console(id, name, id_brand, year, generation, logourl, consoleurl)
       values(
         '${uuidv4()}',
         '${consoleObj.name}',
-        '${consoleObj.idManufacturer}',
+        '${consoleObj.brandId}',
         '${consoleObj.year || ""}',
-        '${consoleObj.generation || ""}'
+        '${consoleObj.generation || ""}',
+        '${consoleObj.logoUrl || ""}',
+        '${consoleObj.consoleUrl || ""}'
       )`;
     
     try {
@@ -63,9 +73,11 @@ class ConsolesService {
     const updateQuery =  `
       UPDATE console
         SET name = '${consoleObj.name}',
-        id_manufacturer = '${consoleObj.idManufacturer}',
+        id_brand = '${consoleObj.brandId}',
         year = '${consoleObj.year || ""}',
-        generation = '${consoleObj.generation || ""}'
+        generation = '${consoleObj.generation || ""}',
+        logourl = '${consoleObj.logoUrl || ""}',
+        consoleurl = '${consoleObj.consoleUrl || ""}'
       WHERE id = '${consoleId}'`;
     
     try {
@@ -92,10 +104,18 @@ class ConsolesService {
   }
 
   /**
-   *  GET CONSOLES BY MANUFACTURER
+   *  GET CONSOLES BY BRAND
    */
-  async getByManufacturer(manufacturerId) {
-    const selectQuery = `SELECT * FROM console WHERE id_manufacturer = '${manufacturerId}'`;
+  async getByBrand(brandId) {
+    const selectQuery = `SELECT
+      id,
+      name,
+      id_brand,
+      year,
+      generation,
+      logourl,
+      consoleurl
+    FROM console WHERE id_brand = '${brandId}'`;
 
     try {
       const consoles = await dbConnection.query(selectQuery);
@@ -110,7 +130,15 @@ class ConsolesService {
    *  GET CONSOLES BY GENERATION
    */
   async getByGeneration(generation) {
-    const selectQuery = `SELECT * FROM console WHERE generation = '${generation}'`;
+    const selectQuery = `SELECT
+      id,
+      name,
+      id_brand,
+      year,
+      generation,
+      logourl,
+      consoleurl
+    FROM console WHERE generation = '${generation}'`;
 
     try {
       const consoles = await dbConnection.query(selectQuery);

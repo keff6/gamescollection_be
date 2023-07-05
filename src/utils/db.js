@@ -4,10 +4,10 @@ const util = require("util");
 let dbConnection;
 
 dbConnection = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'',
-    database:'gamescollection',
+    host: process.env.HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_USER_PASSWORD,
+    database: process.env.DATABASE,
     connectionLimit:10
 });
 
