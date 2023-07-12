@@ -37,6 +37,23 @@ router.get('/games/get', async (req, res) => {
 })
 
 /**
+ *  GET WISHLIST BY CONSOLE
+ */
+router.get('/games/wishlist/:consoleId', async (req, res) => {
+  const { params: { consoleId }} = req;
+
+  try {
+    const gamesService = new GamesService()
+    const games = await gamesService.getWishlistByConsole(consoleId)
+    gamesDataSanitizer(games);
+    res.send({games})
+  } catch(error) {
+    console.log(error)
+    res.status(500).send(error)
+  }
+})
+
+/**
  *  SEARCH GAMES BY TITLE
  */
 router.get('/games/search', async (req, res) => {

@@ -163,7 +163,7 @@ class GamesService {
         is_new,
         is_complete,
         is_wishlist,
-        id_digital,
+        is_digital,
         notes,
         coverurl
     FROM game WHERE id = '${gameId}'`;
@@ -179,15 +179,31 @@ class GamesService {
   }
 
   /**
-   *  GET GAMES BY CONSOLE
+   *  GET WISHLIST BY CONSOLE
    */
-  async getByConsole(consoleId) {
-    const selectQuery = `call GET_GAMES('${consoleId}', null, null, null)`;
+  async getWishlistByConsole(consoleId) {
+    const selectQuery = `SELECT
+      id,
+      title,
+      id_console,
+      saga,
+      year,
+      developer,
+      publisher,
+      is_new,
+      is_complete,
+      is_wishlist,
+      is_digital,
+      notes,
+      coverurl
+    FROM game WHERE id_console = '${consoleId}'
+    AND is_wishlist = 1`;
 
     try {
       const games = await dbConnection.query(selectQuery);
       return games && games[0] || [];
     } catch(err) {
+      console.log('AJHHHH', err)
       throw new Error(err.messsage);
     } 
     
