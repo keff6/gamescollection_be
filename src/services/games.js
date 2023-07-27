@@ -244,7 +244,7 @@ class GamesService {
   /**
  *  SEARCH GAMES BY TITLE
  */
-  async search(title) {
+  async search(searchTerm, consoleId) {
     const selectQuery = `SELECT
         id,
         title,
@@ -255,10 +255,15 @@ class GamesService {
         publisher,
         is_new,
         is_complete,
+        is_wishlist,
+        is_digital,
         notes,
         coverurl
       FROM game
-      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%${title}%', ' ', ''))`;
+      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%${searchTerm}%', ' ', ''))
+      AND id_console='${consoleId}'`;
+
+      console.log(selectQuery)
 
     try {
       const games = await dbConnection.query(selectQuery);

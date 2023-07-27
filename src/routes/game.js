@@ -56,21 +56,22 @@ router.get('/games/wishlist/:consoleId', async (req, res) => {
 /**
  *  SEARCH GAMES BY TITLE
  */
-router.get('/games/search', async (req, res) => {
-  const { query: searchParamsObj } = req
-  const params =  Object.keys(searchParamsObj);
+router.post('/games/search', [body('searchTerm').notEmpty()],
+async (req, res) => {
+  const errors = validationResult(req)
 
-  if(params.length === 0) {
+  if(!errors.isEmpty()) {
     res.status(400).send("No search params provided!")
     return
   }
 
-  const { title } = searchParamsObj;
+  const { searchTerm, consoleId } = req.body;
 
   try {
     const gamesService = new GamesService()
-    const games = await gamesService.search(title)
-    res.send(games)
+    const games = await gamesService.search(searchTerm, consoleId)
+    gamesDataSanitizer(games)
+    res.send({games})
   } catch(error) {
     console.log(error)
     res.status(500).send(error)
