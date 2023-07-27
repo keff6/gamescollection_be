@@ -1,6 +1,7 @@
 const express = require('express')
 const { body, validationResult } = require('express-validator');
 const BrandsService = require('../services/brands')
+const { brandsDataSanitizer } = require('../utils/responseSanitizer');
 const router = new express.Router()
 
 /**
@@ -10,6 +11,7 @@ router.get('/brands', async (req, res) => {
   try {
     const brandsService = new BrandsService()
     const brands = await brandsService.getAll()
+    brandsDataSanitizer(brands)
     res.send({brands})
   } catch(error) {
     console.log(error)
