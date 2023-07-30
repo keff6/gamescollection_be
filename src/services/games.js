@@ -263,8 +263,6 @@ class GamesService {
       WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%${searchTerm}%', ' ', ''))
       AND id_console='${consoleId}'`;
 
-      console.log(selectQuery)
-
     try {
       const games = await dbConnection.query(selectQuery);
       return games;
