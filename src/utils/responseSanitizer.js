@@ -1,3 +1,10 @@
+const brandsDataSanitizer = (brands) => {
+  return brands.map(c => {
+    c.logoUrl = c.logourl;
+    delete c.logourl;
+  })
+}
+
 const consolesDataSanitizer = (consoles) => {
     return consoles.map(c => {
       c.brandId = c.id_brand;
@@ -32,4 +39,5 @@ const gamesDataSanitizer = (games) => {
 module.exports = {
   consolesDataSanitizer,
   gamesDataSanitizer,
+  brandsDataSanitizer,
 }

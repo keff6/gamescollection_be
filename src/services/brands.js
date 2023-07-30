@@ -8,7 +8,7 @@ class BrandsService {
   async add(brandObj) {
     const insertQuery =  `INSERT INTO
       brand(id, name, origin, logourl)
-      values('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logourl || ""}')`;
+      values('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logoUrl || ""}')`;
     
     try {
       await dbConnection.query(insertQuery);
@@ -27,7 +27,7 @@ class BrandsService {
       SET
         name = '${brandObj.name}',
         origin = '${brandObj.origin || ""}',
-        logourl = '${brandObj.logourl || ""}'
+        logourl = '${brandObj.logoUrl || ""}'
       WHERE id = '${brandId}'`;
 
     try {
