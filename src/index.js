@@ -7,6 +7,7 @@ const brandRoutes = require('./routes/brand');
 const consoleRoutes = require('./routes/console');
 const gameRoutes = require('./routes/game');
 const userRoutes = require('./routes/user');
+const errorHandler = require('./middleware/errorHandler')
 
 const app = express()
 
@@ -25,6 +26,9 @@ app.use(brandRoutes);
 app.use(consoleRoutes);
 app.use(gameRoutes);
 app.use(userRoutes);
+
+// custom error handler middleware
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server is up on port: ${port}`)

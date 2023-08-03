@@ -21,7 +21,7 @@ class GenresService {
    *  UPDATE GENRE
    */
   async update(genreId, genreObj) {
-    const updateQuery = `UPDATE genre SET name = '${genreObj.updatedName}' where id = '${genreId}'`;
+    const updateQuery = `UPDATE genre SET name = '${genreObj.newName}' where id = '${genreId}'`;
 
     try {
       await dbConnection.query(updateQuery);
