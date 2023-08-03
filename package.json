@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/keff6/gamescollection_be#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -27,6 +28,7 @@
     "express-myconnection": "^1.0.4",
     "express-session": "^1.17.3",
     "express-validator": "^6.15.0",
+    "jsonwebtoken": "^9.0.1",
     "method-override": "^3.0.0",
     "mysql2": "^3.2.1",
     "uuid": "^9.0.0"

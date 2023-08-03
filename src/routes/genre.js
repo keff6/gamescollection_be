@@ -2,11 +2,12 @@ const express = require('express')
 const { body, validationResult } = require('express-validator');
 const GenresService = require('../services/genres')
 const router = new express.Router()
+const verifyJWT = require('../middleware/verifyJWT')
 
 /**
  *  GET ALL GENRES
  */
-router.get('/genres', async (req, res) => {
+router.get('/genres',verifyJWT, async (req, res) => {
   try {
     const genresService = new GenresService()
     const genres = await genresService.getAll()
