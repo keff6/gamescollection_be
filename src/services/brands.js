@@ -8,7 +8,7 @@ class BrandsService {
   async add(brandObj) {
     const insertQuery =  `INSERT INTO
       brand(id, name, origin, logourl)
-      values('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logoUrl || ""}')`;
+      VALUES('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logoUrl || ""}')`;
     
     try {
       await dbConnection.query(insertQuery);
@@ -42,7 +42,7 @@ class BrandsService {
    *  REMOVE BRAND
    */
   async remove(brandId) {
-    const removeQuery = `DELETE FROM brand where id = '${brandId}'`;
+    const removeQuery = `DELETE FROM brand WHERE id = '${brandId}'`;
 
     // TODO: sub routine to also delete all lines on game_x_genre table
 
