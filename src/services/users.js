@@ -24,7 +24,7 @@ class UsersService {
       await dbConnection.query(insertQuery);
       return "Added succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -39,7 +39,7 @@ class UsersService {
       const user = await dbConnection.query(selectQuery);
       return user[0] || null;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -53,7 +53,7 @@ class UsersService {
         const user = await dbConnection.query(selectQuery);
         return user[0] || null;
       } catch(err) {
-        throw new Error(err.messsage);
+        throw new Error(err);
       } 
     }
 
@@ -69,7 +69,7 @@ class UsersService {
       await dbConnection.query(updateQuery);
       return "Refresh token succesfully set";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -85,7 +85,7 @@ class UsersService {
         await dbConnection.query(updateQuery);
         return "Refresh token succesfully cleared";
       } catch(err) {
-        throw new Error(err.messsage);
+        throw new Error(err);
       } 
     }
 }

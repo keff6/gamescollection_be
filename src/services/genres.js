@@ -12,7 +12,7 @@ class GenresService {
       await dbConnection.query(insertQuery);
       return "Added succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -27,7 +27,7 @@ class GenresService {
       await dbConnection.query(updateQuery);
       return "Updated succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -43,7 +43,7 @@ class GenresService {
       await dbConnection.query(removeQuery);
       return "Removed succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
   
@@ -57,7 +57,7 @@ class GenresService {
       const rows = await dbConnection.query(selectQuery);
       return rows;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -73,7 +73,7 @@ class GenresService {
       const genre = result[0]
       return genre || {};
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }

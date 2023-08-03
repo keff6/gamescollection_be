@@ -26,7 +26,7 @@ class GamesService {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -78,7 +78,7 @@ class GamesService {
       return "Added succesfully!";
     } catch(err) {
       dbConnection.rollback();
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -129,7 +129,7 @@ class GamesService {
     } catch(err) {
       console.log(err.message)
       dbConnection.rollback();
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -144,7 +144,7 @@ class GamesService {
       await dbConnection.query(removeQuery);
       return "Removed succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -173,7 +173,7 @@ class GamesService {
       const console = result[0];
       return console || {};
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -204,7 +204,7 @@ class GamesService {
       return games && games[0] || [];
     } catch(err) {
       console.log('AJHHHH', err)
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -237,7 +237,7 @@ class GamesService {
         const games = await dbConnection.query(selectQuery);
         return games && games[0] || [];
       } catch(err) {
-        throw new Error(err.messsage);
+        throw new Error(err);
       }
     }
 
@@ -267,7 +267,7 @@ class GamesService {
       const games = await dbConnection.query(selectQuery);
       return games;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }

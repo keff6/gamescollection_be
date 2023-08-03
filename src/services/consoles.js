@@ -12,7 +12,7 @@ class ConsolesService {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -36,7 +36,7 @@ class ConsolesService {
       const console = result[0];
       return console || {};
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -47,7 +47,7 @@ class ConsolesService {
   async add(consoleObj) {
     const insertQuery =  `
       INSERT INTO console(id, name, id_brand, year, generation, logourl, consoleurl)
-      values(
+      VALUES(
         '${uuidv4()}',
         '${consoleObj.name}',
         '${consoleObj.brandId}',
@@ -61,7 +61,7 @@ class ConsolesService {
       await dbConnection.query(insertQuery);
       return "Added succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -84,7 +84,7 @@ class ConsolesService {
       await dbConnection.query(updateQuery);
       return "Updated succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -93,13 +93,13 @@ class ConsolesService {
    *  REMOVE CONSOLE
    */
   async remove(consoleId) {
-    const removeQuery = `DELETE FROM console where id = '${consoleId}'`;
+    const removeQuery = `DELETE FROM console WHERE id = '${consoleId}'`;
 
     try {
       await dbConnection.query(removeQuery);
       return "Removed succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -121,7 +121,7 @@ class ConsolesService {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -144,7 +144,7 @@ class ConsolesService {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
