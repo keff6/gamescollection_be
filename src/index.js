@@ -7,6 +7,7 @@ const brandRoutes = require('./routes/brand');
 const consoleRoutes = require('./routes/console');
 const gameRoutes = require('./routes/game');
 const userRoutes = require('./routes/user');
+const authRoutes = require('./routes/auth');
 const errorHandler = require('./middleware/errorHandler')
 
 const app = express()
@@ -26,6 +27,7 @@ app.use(brandRoutes);
 app.use(consoleRoutes);
 app.use(gameRoutes);
 app.use(userRoutes);
+app.use(authRoutes);
 
 // custom error handler middleware
 app.use(errorHandler);
