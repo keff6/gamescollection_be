@@ -1,4 +1,4 @@
-const dbConnection = require("../utils/db");
+const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
 
 class BrandsService {
@@ -8,13 +8,13 @@ class BrandsService {
   async add(brandObj) {
     const insertQuery =  `INSERT INTO
       brand(id, name, origin, logourl)
-      values('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logoUrl || ""}')`;
+      VALUES('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logoUrl || ""}')`;
     
     try {
       await dbConnection.query(insertQuery);
       return "Added succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -34,7 +34,7 @@ class BrandsService {
       await dbConnection.query(updateQuery);
       return "Updated succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -42,7 +42,7 @@ class BrandsService {
    *  REMOVE BRAND
    */
   async remove(brandId) {
-    const removeQuery = `DELETE FROM brand where id = '${brandId}'`;
+    const removeQuery = `DELETE FROM brand WHERE id = '${brandId}'`;
 
     // TODO: sub routine to also delete all lines on game_x_genre table
 
@@ -50,7 +50,7 @@ class BrandsService {
       await dbConnection.query(removeQuery);
       return "Removed succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
   
@@ -64,7 +64,7 @@ class BrandsService {
       const rows = await dbConnection.query(selectQuery);
       return rows;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -80,7 +80,7 @@ class BrandsService {
       const brand = result[0];
       return brand || {};
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
