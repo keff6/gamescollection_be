@@ -9,13 +9,17 @@ const gameRoutes = require('./routes/game');
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
 const errorHandler = require('./middleware/errorHandler')
+const credentials = require('./middleware/credentials')
+const corsOptions = require('./config/corsOptions')
 
 const app = express()
 
 const port = process.env.PORT || 3030;
 
+app.use(credentials);
+app.use(cors(corsOptions));
+
 app.use(express.json())
-app.use(cors())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())

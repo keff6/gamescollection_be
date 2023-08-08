@@ -27,13 +27,13 @@ const login = async (req, res, next) => {
       const accessToken = jwt.sign(
         { "username": foundUser.username },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' } // change to 15 minutes once dev ready
+        { expiresIn: '10m' }
       );
 
       const refreshToken = jwt.sign(
         { "username": foundUser.username },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '1d' }
+        { expiresIn: '2h' }
       );
 
       // SAVE the refresh token to DB
@@ -41,10 +41,18 @@ const login = async (req, res, next) => {
 
       res.cookie('jwt', refreshToken, {
         httpOnly: true,
+        sameSite: 'None',
+        secure: true,
         maxAge: DAY_IN_MILLISECONDS,
       })
 
-      res.send({accessToken})
+      res.send({
+        id: foundUser.id,
+        name: foundUser.name,
+        lastName: foundUser.lastname,
+        role: foundUser.role,
+        accessToken
+      })
     }
   } catch(error) {
     next(error)
@@ -77,7 +85,7 @@ const refreshToken = async (req, res, next) => {
         const accessToken = jwt.sign(
           { "username": decoded.username },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "1d"}
+          { expiresIn: "2h"}
         )
         
         res.send({accessToken})
@@ -103,14 +111,14 @@ const logout = async (req, res, next) => {
     const foundUser = await authService.checkUserByRefreshToken(refreshToken);
     
     if(!foundUser) {
-      res.clearCookie('jwt', { httpOnly: true })
+      res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
       return res.sendStatus(204); 
     }
 
     // Clear user refresh token on DB
     await authService.clearUserRefreshToken(foundUser.id)
 
-    res.clearCookie('jwt', { httpOnly: true })
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
 
     return res.sendStatus(204);  
   } catch(error) {

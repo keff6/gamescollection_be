@@ -1,4 +1,4 @@
-const dbConnection = require("../utils/db");
+const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
 
 class GamesService {
@@ -127,7 +127,6 @@ class GamesService {
 
       return "Updated succesfully!";
     } catch(err) {
-      console.log(err.message)
       dbConnection.rollback();
       throw new Error(err);
     } 
@@ -203,7 +202,6 @@ class GamesService {
       const games = await dbConnection.query(selectQuery);
       return games && games[0] || [];
     } catch(err) {
-      console.log('AJHHHH', err)
       throw new Error(err);
     } 
     

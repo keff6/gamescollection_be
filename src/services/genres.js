@@ -1,4 +1,4 @@
-const dbConnection = require("../utils/db");
+const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
 
 class GenresService {
@@ -21,7 +21,7 @@ class GenresService {
    *  UPDATE GENRE
    */
   async update(genreId, genreObj) {
-    const updateQuery = `UPDATE genre SET name = '${genreObj.newName}' where id = '${genreId}'`;
+    const updateQuery = `UPDATE genre SET name = '${genreObj.name}' where id = '${genreId}'`;
 
     try {
       await dbConnection.query(updateQuery);

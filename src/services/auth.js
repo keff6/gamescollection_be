@@ -1,4 +1,4 @@
-const dbConnection = require("../utils/db");
+const dbConnection = require("../config/db");
 
 class AuthService {
   /*

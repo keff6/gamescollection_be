@@ -6,8 +6,8 @@ const brandController = require('../controllers/brandController')
 
 router.get('/brands', brandController.getAll)
 router.get('/brands/:id', brandController.getById)
-router.post('/brands/add', body('name').notEmpty(), brandController.add)
-router.put('/brands/edit/:id', body('name').notEmpty(), brandController.update)
-router.delete('/brands/remove/:id', brandController.remove)
+router.post('/brands/add', verifyJWT, body('name').notEmpty(), brandController.add)
+router.put('/brands/edit/:id', verifyJWT, body('name').notEmpty(), brandController.update)
+router.delete('/brands/remove/:id', verifyJWT, brandController.remove)
 
 module.exports = router
