@@ -1,7 +1,7 @@
 const express = require('express')
 const { body } = require('express-validator');
 const router = new express.Router()
-const verifyJWT = require('../middleware/verifyJWT')  // TODO: Add to private routes
+const verifyJWT = require('../middleware/verifyJWT')
 const brandController = require('../controllers/brandController')
 
 router.get('/brands', brandController.getAll)
