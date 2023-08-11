@@ -1,7 +1,9 @@
 const brandsDataSanitizer = (brands) => {
   return brands.map(c => {
     c.logoUrl = c.logourl;
+    c.totalConsoles = c.total_consoles;
     delete c.logourl;
+    delete c.total_consoles;
   })
 }
 
@@ -10,9 +12,11 @@ const consolesDataSanitizer = (consoles) => {
       c.brandId = c.id_brand;
       c.logoUrl = c.logourl;
       c.consoleUrl = c.consoleurl;
+      c.totalGames = c.total_games;
       delete c.id_brand;
       delete c.logourl;
       delete c.consoleurl;
+      delete c.total_games;
     })
 }
 

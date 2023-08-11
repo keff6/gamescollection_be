@@ -108,14 +108,18 @@ class ConsolesService {
    */
   async getByBrand(brandId) {
     const selectQuery = `SELECT
-      id,
-      name,
-      id_brand,
-      year,
-      generation,
-      logourl,
-      consoleurl
-    FROM console WHERE id_brand = '${brandId}'`;
+      c.id,
+      c.name,
+      c.id_brand,
+      c.year,
+      c.generation,
+      c.logourl,
+      c.consoleurl,
+      count(g.id) as total_games
+    FROM console c LEFT JOIN game g
+    ON c.id = g.id_console
+    WHERE c.id_brand = '${brandId}'
+    GROUP BY c.id`;
 
     try {
       const consoles = await dbConnection.query(selectQuery);

@@ -58,7 +58,11 @@ class BrandsService {
    *  GET ALL BRANDS
    */
   async getAll() {
-    const selectQuery = 'SELECT id, name, origin, logourl FROM brand';
+    const selectQuery = `SELECT 
+      b.id, b.name, b.origin, b.logourl, count(c.id) as total_consoles
+      FROM brand b LEFT JOIN console c
+      ON b.id = c.id_brand
+      GROUP BY b.id`;
 
     try {
       const rows = await dbConnection.query(selectQuery);
