@@ -1,4 +1,4 @@
-const dbConnection = require("../utils/db");
+const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
 
 class GamesService {
@@ -26,7 +26,7 @@ class GamesService {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -78,7 +78,7 @@ class GamesService {
       return "Added succesfully!";
     } catch(err) {
       dbConnection.rollback();
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -127,9 +127,8 @@ class GamesService {
 
       return "Updated succesfully!";
     } catch(err) {
-      console.log(err.message)
       dbConnection.rollback();
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -144,7 +143,7 @@ class GamesService {
       await dbConnection.query(removeQuery);
       return "Removed succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -173,7 +172,7 @@ class GamesService {
       const console = result[0];
       return console || {};
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -203,8 +202,7 @@ class GamesService {
       const games = await dbConnection.query(selectQuery);
       return games && games[0] || [];
     } catch(err) {
-      console.log('AJHHHH', err)
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -232,12 +230,19 @@ class GamesService {
         ${saga ? "'" + saga + "'" : null},
         ${initialLetter ? "'" + initialLetter + "'" : "''"},
         ${sortBy ? "'" + sortBy + "'" : null})`;
+
+      const totalQuery = `SELECT Count(0) as total
+        FROM game WHERE id_console='${idConsole}'`
   
       try {
         const games = await dbConnection.query(selectQuery);
-        return games && games[0] || [];
+        const total = await dbConnection.query(totalQuery);
+        return {
+          games: games && games[0] || [],
+          total: total && total[0] || 0,
+        }
       } catch(err) {
-        throw new Error(err.messsage);
+        throw new Error(err);
       }
     }
 
@@ -267,9 +272,27 @@ class GamesService {
       const games = await dbConnection.query(selectQuery);
       return games;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
+  }
+
+  /*
+  *  Validates if title already exists. return true if not found
+  */
+  async validateTitle(title, consoleId) {
+    const selectQuery = `SELECT
+      count(0) as found
+      FROM game
+      WHERE id_console = '${consoleId}'
+      AND title = '${title}'`;
+
+    try {
+      const found = await dbConnection.query(selectQuery);
+      return found[0];
+    } catch(err) {
+      throw new Error(err);
+    } 
   }
 
 }

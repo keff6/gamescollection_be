@@ -1,4 +1,4 @@
-const dbConnection = require("../utils/db");
+const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
 
 class ConsolesService {
@@ -12,7 +12,7 @@ class ConsolesService {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -36,7 +36,7 @@ class ConsolesService {
       const console = result[0];
       return console || {};
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -47,7 +47,7 @@ class ConsolesService {
   async add(consoleObj) {
     const insertQuery =  `
       INSERT INTO console(id, name, id_brand, year, generation, logourl, consoleurl)
-      values(
+      VALUES(
         '${uuidv4()}',
         '${consoleObj.name}',
         '${consoleObj.brandId}',
@@ -61,7 +61,7 @@ class ConsolesService {
       await dbConnection.query(insertQuery);
       return "Added succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -84,7 +84,7 @@ class ConsolesService {
       await dbConnection.query(updateQuery);
       return "Updated succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -93,13 +93,26 @@ class ConsolesService {
    *  REMOVE CONSOLE
    */
   async remove(consoleId) {
-    const removeQuery = `DELETE FROM console where id = '${consoleId}'`;
+    const removeConsoleQuery = `DELETE FROM console WHERE id = '${consoleId}'`;
+    const removeGamesQuery = `DELETE FROM game WHERE id_console = '${consoleId}'`;
 
     try {
-      await dbConnection.query(removeQuery);
+      // SET SQL transaction
+      await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+      // begin transaction
+      await dbConnection.beginTransaction();
+
+      await dbConnection.execute(removeConsoleQuery);
+      await dbConnection.execute(removeGamesQuery);
+
+      // commit transaction
+      await dbConnection.commit();
+
       return "Removed succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      dbConnection.rollback();
+      throw new Error(err);
     } 
   }
 
@@ -108,20 +121,24 @@ class ConsolesService {
    */
   async getByBrand(brandId) {
     const selectQuery = `SELECT
-      id,
-      name,
-      id_brand,
-      year,
-      generation,
-      logourl,
-      consoleurl
-    FROM console WHERE id_brand = '${brandId}'`;
+      c.id,
+      c.name,
+      c.id_brand,
+      c.year,
+      c.generation,
+      c.logourl,
+      c.consoleurl,
+      count(g.id) as total_games
+    FROM console c LEFT JOIN game g
+    ON c.id = g.id_console
+    WHERE c.id_brand = '${brandId}'
+    GROUP BY c.id`;
 
     try {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -144,7 +161,7 @@ class ConsolesService {
       const consoles = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }

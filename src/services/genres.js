@@ -1,4 +1,4 @@
-const dbConnection = require("../utils/db");
+const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
 
 class GenresService {
@@ -12,7 +12,7 @@ class GenresService {
       await dbConnection.query(insertQuery);
       return "Added succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -21,13 +21,13 @@ class GenresService {
    *  UPDATE GENRE
    */
   async update(genreId, genreObj) {
-    const updateQuery = `UPDATE genre SET name = '${genreObj.updatedName}' where id = '${genreId}'`;
+    const updateQuery = `UPDATE genre SET name = '${genreObj.name}' where id = '${genreId}'`;
 
     try {
       await dbConnection.query(updateQuery);
       return "Updated succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
 
@@ -43,7 +43,7 @@ class GenresService {
       await dbConnection.query(removeQuery);
       return "Removed succesfully!";
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
   }
   
@@ -57,7 +57,7 @@ class GenresService {
       const rows = await dbConnection.query(selectQuery);
       return rows;
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
@@ -73,7 +73,7 @@ class GenresService {
       const genre = result[0]
       return genre || {};
     } catch(err) {
-      throw new Error(err.messsage);
+      throw new Error(err);
     } 
     
   }
