@@ -12,5 +12,6 @@ router.post('/games/add', verifyJWT, [body('title').notEmpty(), body('consoleId'
 router.put('/games/edit/:id', verifyJWT, [body('title').notEmpty(), body('consoleId').notEmpty()], gameController.update)
 router.delete('/games/remove/:id', verifyJWT, gameController.remove)
 router.get('/games/:id', gameController.getById)
+router.post('/games/validate', [body('title').notEmpty(), body('consoleId').notEmpty()], gameController.validateTitle)
 
 module.exports = router

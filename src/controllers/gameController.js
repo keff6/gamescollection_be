@@ -24,9 +24,9 @@ const getByParams = async (req, res, next) => {
 
   try {
     const gamesService = new GamesService()
-    const games = await gamesService.getByParams(getParamsObj)
+    const {games, total} = await gamesService.getByParams(getParamsObj)
     gamesDataSanitizer(games);
-    res.send({games})
+    res.send({games, ...total})
   } catch(error) {
     next(error)
   }
@@ -140,6 +140,28 @@ const getById = async (req, res, next) => {
   }
 }
 
+/**
+ *  VALIDATE IF TITLE EXISTS
+ */
+const validateTitle = async (req, res, next) => {
+  try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      res.status(400).send("Invalid object!")
+      return
+    }
+
+    const { body: { title, consoleId }} = req;
+    const gamesService = new GamesService()
+    const { found } = await gamesService.validateTitle(title, consoleId);
+    const isValid = found === 0;
+    res.send(isValid)
+  } catch(error) {
+    next(error)
+  }
+}
+
 
 module.exports = {
   getAll,
@@ -150,4 +172,5 @@ module.exports = {
   add,
   update,
   remove,
+  validateTitle,
 }

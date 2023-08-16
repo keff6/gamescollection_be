@@ -230,10 +230,17 @@ class GamesService {
         ${saga ? "'" + saga + "'" : null},
         ${initialLetter ? "'" + initialLetter + "'" : "''"},
         ${sortBy ? "'" + sortBy + "'" : null})`;
+
+      const totalQuery = `SELECT Count(0) as total
+        FROM game WHERE id_console='${idConsole}'`
   
       try {
         const games = await dbConnection.query(selectQuery);
-        return games && games[0] || [];
+        const total = await dbConnection.query(totalQuery);
+        return {
+          games: games && games[0] || [],
+          total: total && total[0] || 0,
+        }
       } catch(err) {
         throw new Error(err);
       }
@@ -268,6 +275,24 @@ class GamesService {
       throw new Error(err);
     } 
     
+  }
+
+  /*
+  *  Validates if title already exists. return true if not found
+  */
+  async validateTitle(title, consoleId) {
+    const selectQuery = `SELECT
+      count(0) as found
+      FROM game
+      WHERE id_console = '${consoleId}'
+      AND title = '${title}'`;
+
+    try {
+      const found = await dbConnection.query(selectQuery);
+      return found[0];
+    } catch(err) {
+      throw new Error(err);
+    } 
   }
 
 }

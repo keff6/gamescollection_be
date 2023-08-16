@@ -94,7 +94,8 @@ const getByBrand = async (req, res, next) => {
     const consolesService = new ConsolesService()
     const consoles = await consolesService.getByBrand(brandId)
     consolesDataSanitizer(consoles)
-    res.send({consoles})
+    const total = consoles.length || 0;
+    res.send({consoles, total})
   } catch(error) {
     next(error)
   }
