@@ -1,3 +1,5 @@
+USE `gamescollection`;
+
 DELIMITER $$
 CREATE PROCEDURE GET_GAMES (
 	IN idConsole VARCHAR(36),
