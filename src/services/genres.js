@@ -6,7 +6,7 @@ class GenresService {
    *  ADD GENRE
    */
   async add(genreObj) {
-    const insertQuery =  `INSERT INTO genre(id, name) values('${uuidv4()}', '${genreObj.name}')`;
+    const insertQuery =  `INSERT INTO genre(id, name) values('${uuidv4()}', '${genreObj.name.replace(/'/g, "\\'")}')`;
     
     try {
       await dbConnection.query(insertQuery);
@@ -21,7 +21,7 @@ class GenresService {
    *  UPDATE GENRE
    */
   async update(genreId, genreObj) {
-    const updateQuery = `UPDATE genre SET name = '${genreObj.name}' where id = '${genreId}'`;
+    const updateQuery = `UPDATE genre SET name = '${genreObj.name.replace(/'/g, "\\'")}' where id = '${genreId}'`;
 
     try {
       await dbConnection.query(updateQuery);

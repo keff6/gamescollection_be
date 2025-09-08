@@ -41,7 +41,7 @@ class GamesService {
       INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, notes, coverurl)
       values(
         '${newGameId}',
-        '${gameObj.title}',
+        '${gameObj.title.replace(/'/g, "\\'")}',
         '${gameObj.consoleId}',
         '${gameObj.saga || "[]"}',
         '${gameObj.year || ""}',
@@ -51,7 +51,7 @@ class GamesService {
         '${gameObj.isComplete || 0}',
         '${gameObj.isWishlist || 0}',
         '${gameObj.isDigital || 0}',
-        '${gameObj.notes || ""}',
+        '${gameObj.notes.replace(/'/g, "\\'") || ""}',
         '${gameObj.coverUrl || ""}'
       )`;
     
@@ -89,7 +89,7 @@ class GamesService {
   async update(gameId, gameObj) {
     const updateQuery =  `
       UPDATE game
-        SET title = '${gameObj.title}',
+        SET title = '${gameObj.title.replace(/'/g, "\\'")}',
         id_console = '${gameObj.consoleId}',
         saga = '${gameObj.saga || "[]"}',
         year = '${gameObj.year || ""}',
@@ -99,7 +99,7 @@ class GamesService {
         is_complete = '${gameObj.isComplete || 0}',
         is_wishlist = '${gameObj.isWishlist || 0}',
         is_digital = '${gameObj.isDigital|| 0}',
-        notes = '${gameObj.notes || ""}',
+        notes = '${gameObj.notes.replace(/'/g, "\\'") || ""}',
         coverurl = '${gameObj.coverUrl || ""}'
       WHERE id = '${gameId}'`;
 
