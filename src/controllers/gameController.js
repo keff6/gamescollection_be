@@ -40,9 +40,9 @@ const getWishlistByConsole = async (req, res, next) => {
 
   try {
     const gamesService = new GamesService()
-    const games = await gamesService.getWishlistByConsole(consoleId)
+    const {games, total}  = await gamesService.getWishlistByConsole(consoleId)
     gamesDataSanitizer(games);
-    res.send({games})
+    res.send({games, ...total})
   } catch(error) {
     next(error)
   }

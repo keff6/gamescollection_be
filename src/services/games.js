@@ -198,9 +198,16 @@ class GamesService {
     FROM game WHERE id_console = '${consoleId}'
     AND is_wishlist = 1`;
 
+    const totalQuery = `SELECT Count(0) as total
+        FROM game WHERE id_console='${consoleId}'`
+
     try {
       const games = await dbConnection.query(selectQuery);
-      return games && games[0] || [];
+      const total = await dbConnection.query(totalQuery);
+        return {
+          games: games || [],
+          total: total && total[0] || 0,
+        }
     } catch(err) {
       throw new Error(err);
     } 
