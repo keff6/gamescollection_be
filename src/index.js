@@ -8,6 +8,7 @@ const consoleRoutes = require('./routes/console');
 const gameRoutes = require('./routes/game');
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
+const infoRoutes = require('./routes/info');
 const errorHandler = require('./middleware/errorHandler')
 const credentials = require('./middleware/credentials')
 const corsOptions = require('./config/corsOptions')
@@ -32,6 +33,7 @@ app.use(consoleRoutes);
 app.use(gameRoutes);
 app.use(userRoutes);
 app.use(authRoutes);
+app.use(infoRoutes);
 
 // custom error handler middleware
 app.use(errorHandler);

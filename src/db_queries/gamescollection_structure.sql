@@ -57,11 +57,11 @@ CREATE TABLE `gamescollection`.`game_x_genre` (
   CONSTRAINT `fk_game_x_genre_1`
     FOREIGN KEY (`id_game`)
     REFERENCES `gamescollection`.`game` (`id`)
-    ON DELETE CASCADE,
+    ON DELETE RESTRICT,
   CONSTRAINT `fk_game_x_genre_2`
     FOREIGN KEY (`id_genre`)
     REFERENCES `gamescollection`.`genre` (`id`)
-    ON DELETE CASCADE);
+    ON DELETE RESTRICT);
 
 CREATE TABLE `gamescollection`.`user` (
   `id` VARCHAR(36) NOT NULL,
