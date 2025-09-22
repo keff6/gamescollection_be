@@ -29,10 +29,10 @@ class ConsolesService {
       generation,
       logourl,
       consoleurl
-    FROM console WHERE id = '${consoleId}'`;
+    FROM console WHERE id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery);
+      const result = await dbConnection.query(selectQuery, [consoleId]);
       const console = result[0];
       return console || {};
     } catch(err) {
@@ -47,18 +47,20 @@ class ConsolesService {
   async add(consoleObj) {
     const insertQuery =  `
       INSERT INTO console(id, name, id_brand, year, generation, logourl, consoleurl)
-      VALUES(
-        '${uuidv4()}',
-        '${consoleObj.name}',
-        '${consoleObj.brandId}',
-        '${consoleObj.year || ""}',
-        '${consoleObj.generation || ""}',
-        '${consoleObj.logoUrl || ""}',
-        '${consoleObj.consoleUrl || ""}'
-      )`;
+      VALUES(?,?,?,?,?,?,?)`;
+    
+    const data = [
+      uuidv4(),
+      consoleObj.name,
+      consoleObj.brandId,
+      consoleObj.year || "",
+      consoleObj.generation || "",
+      consoleObj.logoUrl || "",
+      consoleObj.consoleUrl || ""
+    ]
     
     try {
-      await dbConnection.query(insertQuery);
+      await dbConnection.query(insertQuery, data);
       return "Added succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -72,16 +74,26 @@ class ConsolesService {
   async update(consoleId, consoleObj) {
     const updateQuery =  `
       UPDATE console
-        SET name = '${consoleObj.name}',
-        id_brand = '${consoleObj.brandId}',
-        year = '${consoleObj.year || ""}',
-        generation = '${consoleObj.generation || ""}',
-        logourl = '${consoleObj.logoUrl || ""}',
-        consoleurl = '${consoleObj.consoleUrl || ""}'
-      WHERE id = '${consoleId}'`;
-    
+        SET name = ?,
+        id_brand = ?,
+        year = ?,
+        generation = ?,
+        logourl = ?,
+        consoleurl = ?
+      WHERE id = ?`;
+
+    const data = [
+      consoleObj.name,
+      consoleObj.brandId,
+      consoleObj.year || "",
+      consoleObj.generation || "",
+      consoleObj.logoUrl || "",
+      consoleObj.consoleUrl || "",
+      consoleId
+    ];
+
     try {
-      await dbConnection.query(updateQuery);
+      await dbConnection.query(updateQuery, data);
       return "Updated succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -93,8 +105,8 @@ class ConsolesService {
    *  REMOVE CONSOLE
    */
   async remove(consoleId) {
-    const removeConsoleQuery = `DELETE FROM console WHERE id = '${consoleId}'`;
-    const removeGamesQuery = `DELETE FROM game WHERE id_console = '${consoleId}'`;
+    const removeConsoleQuery = `DELETE FROM console WHERE id = ?`;
+    const removeGamesQuery = `DELETE FROM game WHERE id_console = ?`;
 
     try {
       // SET SQL transaction
@@ -103,8 +115,8 @@ class ConsolesService {
       // begin transaction
       await dbConnection.beginTransaction();
 
-      await dbConnection.execute(removeConsoleQuery);
-      await dbConnection.execute(removeGamesQuery);
+      await dbConnection.execute(removeConsoleQuery, [consoleId]);
+      await dbConnection.execute(removeGamesQuery, [consoleId]);
 
       // commit transaction
       await dbConnection.commit();
@@ -131,11 +143,12 @@ class ConsolesService {
       count(g.id) as total_games
     FROM console c LEFT JOIN game g
     ON c.id = g.id_console
-    WHERE c.id_brand = '${brandId}'
-    GROUP BY c.id`;
+    WHERE c.id_brand = ?
+    GROUP BY c.id
+    ORDER BY c.year ASC`;
 
     try {
-      const consoles = await dbConnection.query(selectQuery);
+      const consoles = await dbConnection.query(selectQuery, brandId);
       return consoles;
     } catch(err) {
       throw new Error(err);
@@ -155,10 +168,10 @@ class ConsolesService {
       generation,
       logourl,
       consoleurl
-    FROM console WHERE generation = '${generation}'`;
+    FROM console WHERE generation = ?`;
 
     try {
-      const consoles = await dbConnection.query(selectQuery);
+      const consoles = await dbConnection.query(selectQuery, generation);
       return consoles;
     } catch(err) {
       throw new Error(err);

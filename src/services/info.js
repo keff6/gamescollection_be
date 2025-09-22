@@ -5,11 +5,16 @@ class InfoService {
    *  GET TOTALS
    */
   async getTotals() {
-    const selectQuery = `SELECT count(0) as totalGames FROM game`;
+    const selectConsolesQuery = `SELECT count(0) as totalConsoles FROM console`;
+    const selectGamesQuery = `SELECT count(0) as totalGames FROM game`;
 
     try {
-      const totals = await dbConnection.query(selectQuery);
-      return totals[0];
+      const totalConsoles = await dbConnection.query(selectConsolesQuery);
+      const totalGames = await dbConnection.query(selectGamesQuery);
+      return {
+        ...totalConsoles[0],
+        ...totalGames[0],
+      };
     } catch(err) {
       throw new Error(err);
     } 

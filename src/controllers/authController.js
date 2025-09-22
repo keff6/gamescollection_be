@@ -33,7 +33,7 @@ const login = async (req, res, next) => {
       const refreshToken = jwt.sign(
         { "username": foundUser.username },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '2h' }
+        { expiresIn: '10h' }
       );
 
       // SAVE the refresh token to DB
@@ -85,7 +85,7 @@ const refreshToken = async (req, res, next) => {
         const accessToken = jwt.sign(
           { "username": decoded.username },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "2h"}
+          { expiresIn: "10h"}
         )
         
         res.send({accessToken})

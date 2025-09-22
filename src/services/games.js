@@ -39,21 +39,23 @@ class GamesService {
 
     const insertQuery =  `
       INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, notes, coverurl)
-      values(
-        '${newGameId}',
-        '${gameObj.title.replace(/'/g, "\\'")}',
-        '${gameObj.consoleId}',
-        '${gameObj.saga || "[]"}',
-        '${gameObj.year || ""}',
-        '${gameObj.developer || ""}',
-        '${gameObj.publisher || ""}',
-        '${gameObj.isNew || 0}',
-        '${gameObj.isComplete || 0}',
-        '${gameObj.isWishlist || 0}',
-        '${gameObj.isDigital || 0}',
-        '${gameObj.notes.replace(/'/g, "\\'") || ""}',
-        '${gameObj.coverUrl || ""}'
-      )`;
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+
+    const data = [
+      newGameId,
+      gameObj.title.replace(/'/g, "\\'"),
+      gameObj.consoleId,
+      gameObj.saga || "[]",
+      gameObj.year || "",
+      gameObj.developer || "",
+      gameObj.publisher || "",
+      gameObj.isNew || 0,
+      gameObj.isComplete || 0,
+      gameObj.isWishlist || 0,
+      gameObj.isDigital || 0,
+      gameObj.notes.replace(/'/g, "\\'") || "",
+      gameObj.coverUrl || ""
+    ]
     
     const gameGenres = gameObj.genres || []
 
@@ -64,7 +66,7 @@ class GamesService {
       // begin transaction
       await dbConnection.beginTransaction();
 
-      await dbConnection.execute(insertQuery);
+      await dbConnection.execute(insertQuery, data);
 
       if (gameGenres.length > 0) {
         for(let genreId of gameGenres) {
@@ -89,19 +91,35 @@ class GamesService {
   async update(gameId, gameObj) {
     const updateQuery =  `
       UPDATE game
-        SET title = '${gameObj.title.replace(/'/g, "\\'")}',
-        id_console = '${gameObj.consoleId}',
-        saga = '${gameObj.saga || "[]"}',
-        year = '${gameObj.year || ""}',
-        developer = '${gameObj.developer || ""}',
-        publisher = '${gameObj.publisher || ""}',
-        is_new = '${gameObj.isNew || 0}',
-        is_complete = '${gameObj.isComplete || 0}',
-        is_wishlist = '${gameObj.isWishlist || 0}',
-        is_digital = '${gameObj.isDigital|| 0}',
-        notes = '${gameObj.notes.replace(/'/g, "\\'") || ""}',
-        coverurl = '${gameObj.coverUrl || ""}'
-      WHERE id = '${gameId}'`;
+        SET title = ?,
+        id_console = ?,
+        saga = ?,
+        year = ?,
+        developer = ?,
+        publisher = ?,
+        is_new = ?,
+        is_complete = ?,
+        is_wishlist = ?,
+        is_digital = ?,
+        notes = ?,
+        coverurl = ?
+      WHERE id = ?`;
+
+    const data = [
+      gameObj.title.replace(/'/g, "\\'"),
+      gameObj.consoleId,
+      gameObj.saga || "[]",
+      gameObj.year || "",
+      gameObj.developer || "",
+      gameObj.publisher || "",
+      gameObj.isNew || 0,
+      gameObj.isComplete || 0,
+      gameObj.isWishlist || 0,
+      gameObj.isDigital || 0,
+      gameObj.notes.replace(/'/g, "\\'") || "",
+      gameObj.coverUrl || "",
+      gameId
+    ];
 
     const gameGenres = gameObj.genres || []
 
@@ -113,12 +131,12 @@ class GamesService {
       // begin transaction
       await dbConnection.beginTransaction();
 
-      await dbConnection.execute(updateQuery);
-      await dbConnection.execute(`DELETE FROM game_x_genre where id_game = '${gameId}'`)
+      await dbConnection.execute(updateQuery, data);
+      await dbConnection.execute(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
 
       if (gameGenres.length > 0) {
         for(let genreId of gameGenres) {
-          await dbConnection.execute(`INSERT INTO game_x_genre (id_game, id_genre) VALUES ('${gameId}', '${genreId}')`);
+          await dbConnection.execute(`INSERT INTO game_x_genre (id_game, id_genre) VALUES (?, ?)`, [gameId, genreId]);
         }
       }
 
@@ -137,10 +155,10 @@ class GamesService {
    *  REMOVE GAME
    */
   async remove(gameId) {
-    const removeQuery = `DELETE FROM game where id = '${gameId}'`;
+    const removeQuery = `DELETE FROM game where id = ?`;
 
     try {
-      await dbConnection.query(removeQuery);
+      await dbConnection.query(removeQuery, [gameId]);
       return "Removed succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -165,10 +183,10 @@ class GamesService {
         is_digital,
         notes,
         coverurl
-    FROM game WHERE id = '${gameId}'`;
+    FROM game WHERE id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery);
+      const result = await dbConnection.query(selectQuery, [gameId]);
       const console = result[0];
       return console || {};
     } catch(err) {
@@ -195,15 +213,15 @@ class GamesService {
       is_digital,
       notes,
       coverurl
-    FROM game WHERE id_console = '${consoleId}'
+    FROM game WHERE id_console = ?
     AND is_wishlist = 1`;
 
     const totalQuery = `SELECT Count(0) as total
-        FROM game WHERE id_console='${consoleId}'`
+        FROM game WHERE id_console=?`
 
     try {
-      const games = await dbConnection.query(selectQuery);
-      const total = await dbConnection.query(totalQuery);
+      const games = await dbConnection.query(selectQuery, [consoleId]);
+      const total = await dbConnection.query(totalQuery, [consoleId]);
         return {
           games: games || [],
           total: total && total[0] || 0,
@@ -239,11 +257,11 @@ class GamesService {
         ${sortBy ? "'" + sortBy + "'" : null})`;
 
       const totalQuery = `SELECT Count(0) as total
-        FROM game WHERE id_console='${idConsole}'`
+        FROM game WHERE id_console=?`
   
       try {
         const games = await dbConnection.query(selectQuery);
-        const total = await dbConnection.query(totalQuery);
+        const total = await dbConnection.query(totalQuery,[idConsole]);
         return {
           games: games && games[0] || [],
           total: total && total[0] || 0,
@@ -272,11 +290,11 @@ class GamesService {
         notes,
         coverurl
       FROM game
-      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%${searchTerm}%', ' ', ''))
-      AND id_console='${consoleId}'`;
+      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%?%', ' ', ''))
+      AND id_console=?`;
 
     try {
-      const games = await dbConnection.query(selectQuery);
+      const games = await dbConnection.query(selectQuery,[searchTerm,consoleId]);
       return games;
     } catch(err) {
       throw new Error(err);
@@ -291,11 +309,11 @@ class GamesService {
     const selectQuery = `SELECT
       count(0) as found
       FROM game
-      WHERE id_console = '${consoleId}'
-      AND title = '${title}'`;
+      WHERE id_console = ?
+      AND title = ?`;
 
     try {
-      const found = await dbConnection.query(selectQuery);
+      const found = await dbConnection.query(selectQuery, [consoleId, title]);
       return found[0];
     } catch(err) {
       throw new Error(err);

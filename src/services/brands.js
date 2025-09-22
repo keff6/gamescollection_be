@@ -6,12 +6,16 @@ class BrandsService {
    *  ADD BRAND
    */
   async add(brandObj) {
-    const insertQuery =  `INSERT INTO
-      brand(id, name, origin, logourl)
-      VALUES('${uuidv4()}', '${brandObj.name}', '${brandObj.origin || ""}', '${brandObj.logoUrl || ""}')`;
+    const insertQuery =  `INSERT INTO brand(id, name, origin, logourl) VALUES(?,?,?,?)`;
+    const data = [
+      uuidv4(),
+      brandObj.name,
+      brandObj.origin || "",
+      brandObj.logoUrl || ""
+    ];
     
     try {
-      await dbConnection.query(insertQuery);
+      await dbConnection.query(insertQuery, data);
       return "Added succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -23,15 +27,16 @@ class BrandsService {
    *  UPDATE BRAND
    */
   async update(brandId, brandObj) {
-    const updateQuery = `UPDATE brand
-      SET
-        name = '${brandObj.name}',
-        origin = '${brandObj.origin || ""}',
-        logourl = '${brandObj.logoUrl || ""}'
-      WHERE id = '${brandId}'`;
+    const updateQuery = `UPDATE brand SET name = ?, origin = ?, logourl = ? WHERE id = ?`;
+    const data = [
+      brandObj.name,
+      brandObj.origin || "",
+      brandObj.logoUrl || "",
+      brandId
+    ];
 
     try {
-      await dbConnection.query(updateQuery);
+      await dbConnection.query(updateQuery, data);
       return "Updated succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -42,12 +47,12 @@ class BrandsService {
    *  REMOVE BRAND
    */
   async remove(brandId) {
-    const removeQuery = `DELETE FROM brand WHERE id = '${brandId}'`;
+    const removeQuery = `DELETE FROM brand WHERE id = ?`;
 
     // TODO: sub routine to also delete all lines on game_x_genre table
 
     try {
-      await dbConnection.query(removeQuery);
+      await dbConnection.query(removeQuery, [brandId]);
       return "Removed succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -77,10 +82,10 @@ class BrandsService {
    *  GET BRAND BI ID
    */
   async getById(brandId) {
-    const selectQuery = `SELECT id, name, origin, logourl FROM brand WHERE id = '${brandId}'`;
+    const selectQuery = `SELECT id, name, origin, logourl FROM brand WHERE id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery);
+      const result = await dbConnection.query(selectQuery, [brandId]);
       const brand = result[0];
       return brand || {};
     } catch(err) {

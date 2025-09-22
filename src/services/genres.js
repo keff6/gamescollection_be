@@ -6,10 +6,12 @@ class GenresService {
    *  ADD GENRE
    */
   async add(genreObj) {
-    const insertQuery =  `INSERT INTO genre(id, name) values('${uuidv4()}', '${genreObj.name.replace(/'/g, "\\'")}')`;
+    const insertQuery =  `INSERT INTO genre(id, name) VALUES(?, ?)`;
+    
+    const data = [uuidv4(), genreObj.name.replace(/'/g, "\\'")]
     
     try {
-      await dbConnection.query(insertQuery);
+      await dbConnection.query(insertQuery, data);
       return "Added succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -21,10 +23,11 @@ class GenresService {
    *  UPDATE GENRE
    */
   async update(genreId, genreObj) {
-    const updateQuery = `UPDATE genre SET name = '${genreObj.name.replace(/'/g, "\\'")}' where id = '${genreId}'`;
+    const updateQuery = `UPDATE genre SET name = ? where id = ?`;
+    const data = [genreObj.name.replace(/'/g, "\\'"), genreId];
 
     try {
-      await dbConnection.query(updateQuery);
+      await dbConnection.query(updateQuery, data);
       return "Updated succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -35,12 +38,12 @@ class GenresService {
    *  REMOVE GENRE
    */
   async remove(genreId) {
-    const removeQuery = `DELETE FROM genre where id = '${genreId}'`;
+    const removeQuery = `DELETE FROM genre where id = ?`;
 
     // TODO: sub routine to also delete all lines on game_x_genre table
 
     try {
-      await dbConnection.query(removeQuery);
+      await dbConnection.query(removeQuery, [genreId]);
       return "Removed succesfully!";
     } catch(err) {
       throw new Error(err);
@@ -66,11 +69,11 @@ class GenresService {
    *  GET GENRE BY ID
    */
   async getById(genreId) {
-    const selectQuery = `SELECT id,name FROM genre WHERE id = '${genreId}'`;
+    const selectQuery = `SELECT id,name FROM genre WHERE id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery);
-      const genre = result[0]
+      const result = await dbConnection.query(selectQuery, [genreId]);
+      const genre = result[0];
       return genre || {};
     } catch(err) {
       throw new Error(err);
