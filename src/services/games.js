@@ -1,5 +1,6 @@
 const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
+const { ERROR_CODES } = require('../utils/constants')
 
 class GamesService {
   /**
@@ -66,11 +67,11 @@ class GamesService {
       // begin transaction
       await dbConnection.beginTransaction();
 
-      await dbConnection.execute(insertQuery, data);
+      await dbConnection.query(insertQuery, data);
 
       if (gameGenres.length > 0) {
         for(let genreId of gameGenres) {
-          await dbConnection.execute(`INSERT INTO game_x_genre (id_game, id_genre) VALUES ('${newGameId}', '${genreId}')`);
+          await dbConnection.query(`INSERT INTO game_x_genre (id_game, id_genre) VALUES ('${newGameId}', '${genreId}')`);
         }
       }
 
@@ -80,7 +81,9 @@ class GamesService {
       return "Added succesfully!";
     } catch(err) {
       dbConnection.rollback();
-      throw new Error(err);
+      if(err.code === ERROR_CODES.DUPLICATED) throw new Error(ERROR_CODES.DUPLICATED);
+
+      throw new Error("Something went wrong!");
     } 
     
   }
@@ -131,12 +134,12 @@ class GamesService {
       // begin transaction
       await dbConnection.beginTransaction();
 
-      await dbConnection.execute(updateQuery, data);
-      await dbConnection.execute(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
+      await dbConnection.query(updateQuery, data);
+      await dbConnection.query(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
 
       if (gameGenres.length > 0) {
         for(let genreId of gameGenres) {
-          await dbConnection.execute(`INSERT INTO game_x_genre (id_game, id_genre) VALUES (?, ?)`, [gameId, genreId]);
+          await dbConnection.query(`INSERT INTO game_x_genre (id_game, id_genre) VALUES (?, ?)`, [gameId, genreId]);
         }
       }
 
@@ -146,7 +149,9 @@ class GamesService {
       return "Updated succesfully!";
     } catch(err) {
       dbConnection.rollback();
-      throw new Error(err);
+      if(err.code === ERROR_CODES.DUPLICATED) throw new Error(ERROR_CODES.DUPLICATED);
+
+      throw new Error("Something went wrong!");
     } 
     
   }
@@ -304,6 +309,7 @@ class GamesService {
 
   /*
   *  Validates if title already exists. return true if not found
+    TODO: clean or use it
   */
   async validateTitle(title, consoleId) {
     const selectQuery = `SELECT
