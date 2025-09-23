@@ -1,5 +1,6 @@
 const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
+const { ERROR_CODES } = require('../utils/constants')
 
 class GenresService {
   /**
@@ -9,12 +10,14 @@ class GenresService {
     const insertQuery =  `INSERT INTO genre(id, name) VALUES(?, ?)`;
     
     const data = [uuidv4(), genreObj.name.replace(/'/g, "\\'")]
-    
     try {
       await dbConnection.query(insertQuery, data);
       return "Added succesfully!";
     } catch(err) {
-      throw new Error(err);
+      console.log(err)
+      if(err.code === ERROR_CODES.DUPLICATED) throw new Error(ERROR_CODES.DUPLICATED);
+
+      throw new Error("Something went wrong!");
     } 
     
   }
@@ -30,7 +33,9 @@ class GenresService {
       await dbConnection.query(updateQuery, data);
       return "Updated succesfully!";
     } catch(err) {
-      throw new Error(err);
+      if(err.code === ERROR_CODES.DUPLICATED) throw new Error(ERROR_CODES.DUPLICATED);
+      
+      throw new Error("Something went wrong!");
     } 
   }
 
