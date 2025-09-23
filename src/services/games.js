@@ -163,7 +163,18 @@ class GamesService {
     const removeQuery = `DELETE FROM game where id = ?`;
 
     try {
+       // SET SQL transaction
+      await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+      // begin transaction
+      await dbConnection.beginTransaction();
+
+      await dbConnection.query(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
       await dbConnection.query(removeQuery, [gameId]);
+
+      // commit transaction
+      await dbConnection.commit();
+
       return "Removed succesfully!";
     } catch(err) {
       throw new Error(err);

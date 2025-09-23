@@ -113,24 +113,12 @@ class ConsolesService {
    */
   async remove(consoleId) {
     const removeConsoleQuery = `DELETE FROM console WHERE id = ?`;
-    const removeGamesQuery = `DELETE FROM game WHERE id_console = ?`;
 
     try {
-      // SET SQL transaction
-      await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
-
-      // begin transaction
-      await dbConnection.beginTransaction();
-
-      await dbConnection.execute(removeConsoleQuery, [consoleId]);
-      await dbConnection.execute(removeGamesQuery, [consoleId]);
-
-      // commit transaction
-      await dbConnection.commit();
-
+      await dbConnection.query(removeConsoleQuery, [consoleId]);
       return "Removed succesfully!";
     } catch(err) {
-      dbConnection.rollback();
+      if(err.code === ERROR_CODES.IS_REFERENCED) throw new Error(ERROR_CODES.IS_REFERENCED);
       throw new Error(err);
     } 
   }

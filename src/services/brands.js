@@ -55,13 +55,12 @@ class BrandsService {
    */
   async remove(brandId) {
     const removeQuery = `DELETE FROM brand WHERE id = ?`;
-
-    // TODO: sub routine to also delete all lines on game_x_genre table
-
+    
     try {
       await dbConnection.query(removeQuery, [brandId]);
       return "Removed succesfully!";
     } catch(err) {
+      if(err.code === ERROR_CODES.IS_REFERENCED) throw new Error(ERROR_CODES.IS_REFERENCED);
       throw new Error(err);
     } 
   }

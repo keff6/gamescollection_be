@@ -20,7 +20,7 @@ CREATE TABLE `gamescollection`.`console` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (id_brand)
         REFERENCES brand (id)
-		ON DELETE CASCADE
+		ON DELETE RESTRICT
 );
 
 CREATE TABLE `gamescollection`.`genre` (
@@ -45,7 +45,7 @@ CREATE TABLE `gamescollection`.`game` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (id_console)
         REFERENCES console (id)
-        ON DELETE CASCADE);
+        ON DELETE RESTRICT);
   
   
 CREATE TABLE `gamescollection`.`game_x_genre` (

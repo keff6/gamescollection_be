@@ -45,12 +45,11 @@ class GenresService {
   async remove(genreId) {
     const removeQuery = `DELETE FROM genre where id = ?`;
 
-    // TODO: sub routine to also delete all lines on game_x_genre table
-
     try {
       await dbConnection.query(removeQuery, [genreId]);
       return "Removed succesfully!";
     } catch(err) {
+      if(err.code === ERROR_CODES.IS_REFERENCED) throw new Error(ERROR_CODES.IS_REFERENCED);
       throw new Error(err);
     } 
   }
