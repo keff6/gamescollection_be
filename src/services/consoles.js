@@ -28,6 +28,7 @@ class ConsolesService {
       id_brand,
       year,
       generation,
+      is_portable,
       logourl,
       consoleurl
     FROM console WHERE id = ?`;
@@ -47,8 +48,8 @@ class ConsolesService {
    */
   async add(consoleObj) {
     const insertQuery =  `
-      INSERT INTO console(id, name, id_brand, year, generation, logourl, consoleurl)
-      VALUES(?,?,?,?,?,?,?)`;
+      INSERT INTO console(id, name, id_brand, year, generation, is_portable, logourl, consoleurl)
+      VALUES(?,?,?,?,?,?,?,?)`;
     
     const data = [
       uuidv4(),
@@ -56,6 +57,7 @@ class ConsolesService {
       consoleObj.brandId,
       consoleObj.year || "",
       consoleObj.generation || "",
+      consoleObj.isPortable || 0,
       consoleObj.logoUrl || "",
       consoleObj.consoleUrl || ""
     ]
@@ -82,6 +84,7 @@ class ConsolesService {
         id_brand = ?,
         year = ?,
         generation = ?,
+        is_portable = ?,
         logourl = ?,
         consoleurl = ?
       WHERE id = ?`;
@@ -91,6 +94,7 @@ class ConsolesService {
       consoleObj.brandId,
       consoleObj.year || "",
       consoleObj.generation || "",
+      consoleObj.isPortable || 0,
       consoleObj.logoUrl || "",
       consoleObj.consoleUrl || "",
       consoleId
@@ -133,6 +137,7 @@ class ConsolesService {
       c.id_brand,
       c.year,
       c.generation,
+      c.is_portable,
       c.logourl,
       c.consoleurl,
       count(g.id) as total_games
@@ -161,6 +166,7 @@ class ConsolesService {
       id_brand,
       year,
       generation,
+      is_portable,
       logourl,
       consoleurl
     FROM console WHERE generation = ?`;

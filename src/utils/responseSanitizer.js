@@ -13,10 +13,12 @@ const consolesDataSanitizer = (consoles) => {
       c.logoUrl = c.logourl;
       c.consoleUrl = c.consoleurl;
       c.totalGames = c.total_games;
+      c.isPortable = c.is_portable;
       delete c.id_brand;
       delete c.logourl;
       delete c.consoleurl;
       delete c.total_games;
+      delete c.is_portable;
     })
 }
 

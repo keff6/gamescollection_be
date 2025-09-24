@@ -15,6 +15,7 @@ CREATE TABLE `gamescollection`.`console` (
     `id_brand` VARCHAR(36) NOT NULL,
     `year` VARCHAR(4) NULL,
     `generation` VARCHAR(45) NULL,
+    `is_portable` TINYINT NULL,
     `logourl` VARCHAR(255) NULL,
     `consoleurl` VARCHAR(255) NULL,
     PRIMARY KEY (`id`),
