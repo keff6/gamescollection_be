@@ -32,6 +32,8 @@ const gamesDataSanitizer = (games) => {
     g.isComplete = g.is_complete;
     g.isWishlist = g.is_wishlist;
     g.isDigital = g.is_digital;
+    g.isFinished = g.is_finished;
+    g.isBacklog = g.is_backlog;
     g.coverUrl = g.coverurl;
     delete g.id_console;
     delete g.is_new;
@@ -39,6 +41,8 @@ const gamesDataSanitizer = (games) => {
     delete g.is_wishlist;
     delete g.is_digital;
     delete g.coverurl;
+    delete g.is_finished;
+    delete g.is_backlog;
   })
 }
 

@@ -19,6 +19,8 @@ class GamesService {
         is_complete,
         is_wishlist,
         is_digital,
+        is_finished,
+        is_backlog,
         notes,
         coverurl
       FROM game`;
@@ -39,8 +41,8 @@ class GamesService {
     const newGameId = uuidv4();
 
     const insertQuery =  `
-      INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, notes, coverurl)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, is_finished, is_backlog, notes, coverurl)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     const data = [
       newGameId,
@@ -54,6 +56,8 @@ class GamesService {
       gameObj.isComplete || 0,
       gameObj.isWishlist || 0,
       gameObj.isDigital || 0,
+      gameObj.isFinished || 0,
+      gameObj.isBacklog || 0,
       gameObj.notes.replace(/'/g, "\\'") || "",
       gameObj.coverUrl || ""
     ]
@@ -104,6 +108,8 @@ class GamesService {
         is_complete = ?,
         is_wishlist = ?,
         is_digital = ?,
+        is_finished = ?,
+        is_backlog = ?,
         notes = ?,
         coverurl = ?
       WHERE id = ?`;
@@ -119,14 +125,15 @@ class GamesService {
       gameObj.isComplete || 0,
       gameObj.isWishlist || 0,
       gameObj.isDigital || 0,
+      gameObj.isFinished || 0,
+      gameObj.isBacklog || 0,
       gameObj.notes.replace(/'/g, "\\'") || "",
       gameObj.coverUrl || "",
       gameId
     ];
 
-    const gameGenres = gameObj.genres || []
+    const gameGenres = gameObj.genres || [];
 
-    
     try {
       // SET SQL transaction
       await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
@@ -197,6 +204,8 @@ class GamesService {
         is_complete,
         is_wishlist,
         is_digital,
+        is_finished,
+        is_backlog,
         notes,
         coverurl
     FROM game WHERE id = ?`;
@@ -227,6 +236,8 @@ class GamesService {
       is_complete,
       is_wishlist,
       is_digital,
+      is_finished,
+      is_backlog,
       notes,
       coverurl
     FROM game WHERE id_console = ?
@@ -303,6 +314,8 @@ class GamesService {
         is_complete,
         is_wishlist,
         is_digital,
+        is_finished,
+        is_backlog,
         notes,
         coverurl
       FROM game
