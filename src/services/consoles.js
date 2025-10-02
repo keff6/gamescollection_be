@@ -23,15 +23,18 @@ class ConsolesService {
    */
   async getById(consoleId) {
     const selectQuery = `SELECT
-      id,
-      name,
-      id_brand,
-      year,
-      generation,
-      is_portable,
-      logourl,
-      consoleurl
-    FROM console WHERE id = ?`;
+      c.id,
+      c.name,
+      c.id_brand,
+      c.year,
+      c.generation,
+      c.is_portable,
+      c.logourl,
+      c.consoleurl,
+      count(g.id) as total_games
+    FROM console c LEFT JOIN game g
+    ON c.id = g.id_console
+    WHERE c.id = ?`;
 
     try {
       const result = await dbConnection.query(selectQuery, [consoleId]);

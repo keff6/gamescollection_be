@@ -24,6 +24,7 @@ const getById = async (req, res, next) => {
     const { params: { id: consoleId }} = req;
     const consolesService = new ConsolesService()
     const console = await consolesService.getById(consoleId)
+    consolesDataSanitizer([console])
     res.send(console)
   } catch(error) {
     next(error)
