@@ -6,11 +6,22 @@ const { gamesDataSanitizer } = require('../utils/responseSanitizer');
  *  GET ALL GAMES
  */
 const getAll = async (req, res, next) => {
+  const { query: { page = 1, limit = 10 }} = req;
+  const offset = (parseInt(page) - 1) * parseInt(limit);
+
   try {
     const gamesService = new GamesService()
-    const games = await gamesService.getAll()
+    const [games, totalPages, totalItems] = await gamesService.getAll(+limit, +offset)
     gamesDataSanitizer(games);
-    res.send({games})
+    res.send({
+      data: games,
+      pagination: {
+        totalItems,
+        totalPages,
+        currentPage: page,
+        pageSize: limit,
+      },
+    })
   } catch(error) {
     next(error)
   }
@@ -21,51 +32,22 @@ const getAll = async (req, res, next) => {
  */
 const getByParams = async (req, res, next) => {
   const { query: getParamsObj } = req;
+  const { currentPage = 1, limit = 10 } = getParamsObj;
+  const offset = (parseInt(currentPage) - 1) * parseInt(limit);
 
   try {
     const gamesService = new GamesService()
-    const {games, total} = await gamesService.getByParams(getParamsObj)
+    const [games, totalPages, totalItems] = await gamesService.getByParams(getParamsObj, offset)
     gamesDataSanitizer(games);
-    res.send({games, ...total})
-  } catch(error) {
-    next(error)
-  }
-}
-
-/**
- *  GET WISHLIST BY CONSOLE
- */
-const getWishlistByConsole = async (req, res, next) => {
-  const { params: { consoleId }} = req;
-
-  try {
-    const gamesService = new GamesService()
-    const {games, total}  = await gamesService.getWishlistByConsole(consoleId)
-    gamesDataSanitizer(games);
-    res.send({games, ...total})
-  } catch(error) {
-    next(error)
-  }
-}
-
-/**
- *  SEARCH GAMES BY TITLE
- */
-const search = async (req, res, next) => {
-  const errors = validationResult(req)
-
-  if(!errors.isEmpty()) {
-    res.status(400).send("No search params provided!")
-    return
-  }
-
-  const { searchTerm, consoleId } = req.body;
-
-  try {
-    const gamesService = new GamesService()
-    const games = await gamesService.search(searchTerm, consoleId)
-    gamesDataSanitizer(games)
-    res.send({games})
+    res.send({
+      data: games,
+      pagination: {
+        totalItems,
+        totalPages,
+        currentPage,
+        pageSize: limit,
+      },
+    })
   } catch(error) {
     next(error)
   }
@@ -167,8 +149,6 @@ module.exports = {
   getAll,
   getById,
   getByParams,
-  getWishlistByConsole,
-  search,
   add,
   update,
   remove,

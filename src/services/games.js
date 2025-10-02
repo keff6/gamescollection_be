@@ -6,7 +6,7 @@ class GamesService {
   /**
    *  GET ALL GAMES
    */
-  async getAll() {
+  async getAll(limit, offset) {
     const selectQuery = `SELECT
         id,
         title,
@@ -23,11 +23,17 @@ class GamesService {
         is_backlog,
         notes,
         coverurl
-      FROM game`;
+      FROM game LIMIT ? OFFSET ?`;
 
     try {
-      const consoles = await dbConnection.query(selectQuery);
-      return consoles;
+      const countResult = await dbConnection.query('SELECT COUNT(*) as count FROM game');
+      const totalItems = countResult[0].count;
+
+
+      const games = await dbConnection.query(selectQuery, [limit, offset]);
+      const totalPages = Math.ceil(totalItems / limit);
+
+      return [games, totalPages, totalItems]
     } catch(err) {
       throw new Error(err);
     } 
@@ -220,59 +226,29 @@ class GamesService {
     
   }
 
-  /**
-   *  GET WISHLIST BY CONSOLE
-   */
-  async getWishlistByConsole(consoleId) {
-    const selectQuery = `SELECT
-      id,
-      title,
-      id_console,
-      saga,
-      year,
-      developer,
-      publisher,
-      is_new,
-      is_complete,
-      is_wishlist,
-      is_digital,
-      is_finished,
-      is_backlog,
-      notes,
-      coverurl
-    FROM game WHERE id_console = ?
-    AND is_wishlist = 1`;
-
-    const totalQuery = `SELECT Count(0) as total
-        FROM game WHERE id_console=?`
-
-    try {
-      const games = await dbConnection.query(selectQuery, [consoleId]);
-      const total = await dbConnection.query(totalQuery, [consoleId]);
-        return {
-          games: games || [],
-          total: total && total[0] || 0,
-        }
-    } catch(err) {
-      throw new Error(err);
-    } 
-    
-  }
-
-
     /**
    *  GET GAMES BY PARAMS [console, year, genre, saga, initialLetter, sortBy]
    *  call GET_GAMES(idConsole, year, genre, saga, initialLetter, sortBy);
    */
-    async getByParams(paramsObj) {
-      
+    async getByParams(paramsObj, offset = 0) {
       const {
-        idConsole = '',
-        year = '',
-        genre =  '',
-        saga =  '',
-        initialLetter = '',
-        sortBy = '',
+          idConsole = '',
+          year = '',
+          genre =  '',
+          saga =  '',
+          initialLetter = '',
+          // status params
+          isComplete = '',
+          isNew = '',
+          isWishlist = '',
+          isDigital = '',
+          isBacklog = '',
+          isFinished = '',
+          searchTerm = '',
+          // sorting params
+          sortBy = '',
+          sortDirection = '',
+          limit = 10000,
       } = paramsObj;
 
       const selectQuery = `call GET_GAMES(
@@ -281,18 +257,26 @@ class GamesService {
         ${genre ? "'" + genre + "'" : null},
         ${saga ? "'" + saga + "'" : null},
         ${initialLetter ? "'" + initialLetter + "'" : "''"},
-        ${sortBy ? "'" + sortBy + "'" : null})`;
 
-      const totalQuery = `SELECT Count(0) as total
-        FROM game WHERE id_console=?`
-  
+        ${isComplete || null},
+        ${isNew || null},
+        ${isWishlist || null},
+        ${isDigital || null},
+        ${isBacklog || null},
+        ${isFinished || null},
+        ${searchTerm ? "'%" + searchTerm + "%'" : "'%%'"},
+
+        ${sortBy ? "'" + sortBy + "'" : null},
+        ${sortDirection ? "'" + sortDirection + "'" : null},
+        ${limit ? "'" + limit + "'" : null},
+        ${offset ? "'" + offset + "'" : null})`;
+
       try {
-        const games = await dbConnection.query(selectQuery);
-        const total = await dbConnection.query(totalQuery,[idConsole]);
-        return {
-          games: games && games[0] || [],
-          total: total && total[0] || 0,
-        }
+      const [games, totalGames] = await dbConnection.query(selectQuery, [limit, offset]);
+      const totalItems = totalGames[0].row_count;
+      const totalPages = Math.ceil(totalItems / limit);
+
+      return [games, totalPages, totalItems]
       } catch(err) {
         throw new Error(err);
       }
@@ -302,6 +286,8 @@ class GamesService {
  *  SEARCH GAMES BY TITLE
  */
   async search(searchTerm, consoleId) {
+    const searchPattern = `%${searchTerm}%`;
+
     const selectQuery = `SELECT
         id,
         title,
@@ -319,11 +305,11 @@ class GamesService {
         notes,
         coverurl
       FROM game
-      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE('%?%', ' ', ''))
+      WHERE LOWER(REPLACE(title, ' ', '')) Like LOWER(REPLACE(?, ' ', ''))
       AND id_console=?`;
 
     try {
-      const games = await dbConnection.query(selectQuery,[searchTerm,consoleId]);
+      const games = await dbConnection.query(selectQuery,[searchPattern,consoleId]);
       return games;
     } catch(err) {
       throw new Error(err);
