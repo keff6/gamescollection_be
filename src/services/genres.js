@@ -9,7 +9,7 @@ class GenresService {
   async add(genreObj) {
     const insertQuery =  `INSERT INTO genre(id, name) VALUES(?, ?)`;
     
-    const data = [uuidv4(), genreObj.name.replace(/'/g, "\\'")]
+    const data = [uuidv4(), genreObj.name.replace(/'/g, "''")]
     try {
       await dbConnection.query(insertQuery, data);
       return "Added succesfully!";
@@ -27,7 +27,7 @@ class GenresService {
    */
   async update(genreId, genreObj) {
     const updateQuery = `UPDATE genre SET name = ? where id = ?`;
-    const data = [genreObj.name.replace(/'/g, "\\'"), genreId];
+    const data = [genreObj.name.replace(/'/g, "''"), genreId];
 
     try {
       await dbConnection.query(updateQuery, data);
