@@ -133,7 +133,7 @@ class ConsolesService {
   /**
    *  GET CONSOLES BY BRAND
    */
-  async getByBrand(brandId) {
+  async getByBrand(brandId, type) {
     const selectQuery = `SELECT
       c.id,
       c.name,
@@ -147,11 +147,12 @@ class ConsolesService {
     FROM console c LEFT JOIN game g
     ON c.id = g.id_console
     WHERE c.id_brand = ?
+    AND is_portable = COALESCE(?, is_portable)
     GROUP BY c.id
     ORDER BY c.year ASC`;
 
     try {
-      const consoles = await dbConnection.query(selectQuery, brandId);
+      const consoles = await dbConnection.query(selectQuery, [brandId, type]);
       return consoles;
     } catch(err) {
       throw new Error(err);

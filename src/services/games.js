@@ -52,7 +52,7 @@ class GamesService {
 
     const data = [
       newGameId,
-      gameObj.title.replace(/'/g, "''"),
+      gameObj.title.replace(/'/g, "'"),
       gameObj.consoleId,
       gameObj.saga || "[]",
       gameObj.year || "",
@@ -64,7 +64,7 @@ class GamesService {
       gameObj.isDigital || 0,
       gameObj.isFinished || 0,
       gameObj.isBacklog || 0,
-      gameObj.notes.replace(/'/g, "''") || "",
+      gameObj.notes.replace(/'/g, "'") || "",
       gameObj.coverUrl || ""
     ]
     
@@ -121,7 +121,7 @@ class GamesService {
       WHERE id = ?`;
 
     const data = [
-      gameObj.title.replace(/'/g, "''"),
+      gameObj.title.replace(/'/g, "'"),
       gameObj.consoleId,
       gameObj.saga || "[]",
       gameObj.year || "",
@@ -133,7 +133,7 @@ class GamesService {
       gameObj.isDigital || 0,
       gameObj.isFinished || 0,
       gameObj.isBacklog || 0,
-      gameObj.notes.replace(/'/g, "''") || "",
+      gameObj.notes.replace(/'/g, "'") || "",
       gameObj.coverUrl || "",
       gameId
     ];

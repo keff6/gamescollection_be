@@ -91,9 +91,9 @@ const remove = async (req, res, next) => {
 */
 const getByBrand = async (req, res, next) => {
   try {
-    const { params: { id: brandId }} = req;
+    const { params: { id: brandId }, query: {type = undefined}} = req;
     const consolesService = new ConsolesService()
-    const consoles = await consolesService.getByBrand(brandId)
+    const consoles = await consolesService.getByBrand(brandId, type)
     consolesDataSanitizer(consoles)
     const total = consoles.length || 0;
     res.send({consoles, total})
