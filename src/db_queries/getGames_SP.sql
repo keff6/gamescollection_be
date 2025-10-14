@@ -12,6 +12,7 @@ CREATE PROCEDURE GET_GAMES (
     IN isDigital INTEGER,
     IN isBacklog INTEGER,
     IN isFinished INTEGER,
+    IN isPlaying INTEGER,
     -- SEARCH
     IN searchTerm VARCHAR(50),
     -- SORTING AND PAGINATION
@@ -22,7 +23,7 @@ CREATE PROCEDURE GET_GAMES (
 )
 BEGIN
 	CREATE TEMPORARY TABLE IF NOT EXISTS temp_games_base AS
-		SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.is_digital, g.is_finished, g.is_backlog, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres, g.coverurl
+		SELECT g.id, g.title, g.id_console, g.saga, g.year, g.developer, g.publisher, g.is_new, g.is_complete, g.is_wishlist, g.is_digital, g.is_finished, g.is_backlog, g.is_playing, g.notes, JSON_ARRAYAGG(gxg.id_genre) AS genres, g.coverurl
 		FROM game AS g LEFT JOIN game_x_genre AS gxg ON g.id = gxg.id_game
 		WHERE g.id_console = COALESCE(idConsole, g.id_console)  -- filter by console
 		AND g.year = COALESCE(year, g.year) -- filter by year
@@ -33,6 +34,7 @@ BEGIN
         AND g.is_digital = COALESCE(isDigital, g.is_digital)
         AND g.is_backlog = COALESCE(isBacklog, g.is_backlog)
         AND g.is_finished = COALESCE(isFinished, g.is_finished)
+        AND g.is_playing = COALESCE(isPlaying, g.is_playing)
         -- filters by status <<
         -- search
         AND LOWER(REPLACE(g.title, ' ', '')) LIKE LOWER(REPLACE(searchTerm, ' ', ''))
@@ -54,7 +56,7 @@ BEGIN
 	END IF;
     
 	 SET @sql = CONCAT(
-		 'SELECT id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, is_finished, is_backlog, notes, genres, coverurl
+		 'SELECT id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, is_finished, is_backlog, is_playing, notes, genres, coverurl
 		 FROM temp_games_result ',
 		 'ORDER BY ',
 		 (CASE WHEN sortBy IS NULL OR sortBy = "title" THEN "REGEXP_REPLACE(title, '^(?i)(a |an |the )', '') "

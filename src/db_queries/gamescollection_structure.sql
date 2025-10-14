@@ -41,10 +41,11 @@ CREATE TABLE `gamescollection`.`game` (
   `is_complete` TINYINT NULL,
   `is_wishlist` TINYINT NULL,
   `is_digital` TINYINT NULL,
-  `is_finished` TINYINT NULL,
-  `is_backlog` TINYINT NULL,
   `notes` TINYTEXT NULL,
   `coverurl` VARCHAR(255) NULL,
+  `is_finished` TINYINT NULL,
+  `is_backlog` TINYINT NULL,
+  `is_playing` TINYINT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (id_console)
         REFERENCES console (id)

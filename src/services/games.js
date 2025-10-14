@@ -21,6 +21,7 @@ class GamesService {
         is_digital,
         is_finished,
         is_backlog,
+        is_playing,
         notes,
         coverurl
       FROM game LIMIT ? OFFSET ?`;
@@ -47,7 +48,7 @@ class GamesService {
     const newGameId = uuidv4();
 
     const insertQuery =  `
-      INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, is_finished, is_backlog, notes, coverurl)
+      INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, is_finished, is_backlog, is_playing, notes, coverurl)
       VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     const data = [
@@ -64,6 +65,7 @@ class GamesService {
       gameObj.isDigital || 0,
       gameObj.isFinished || 0,
       gameObj.isBacklog || 0,
+      gameObj.isPlaying || 0,
       gameObj.notes.replace(/'/g, "'") || "",
       gameObj.coverUrl || ""
     ]
@@ -116,6 +118,7 @@ class GamesService {
         is_digital = ?,
         is_finished = ?,
         is_backlog = ?,
+        is_playing = ?,
         notes = ?,
         coverurl = ?
       WHERE id = ?`;
@@ -133,6 +136,7 @@ class GamesService {
       gameObj.isDigital || 0,
       gameObj.isFinished || 0,
       gameObj.isBacklog || 0,
+      gameObj.isPlaying|| 0,
       gameObj.notes.replace(/'/g, "'") || "",
       gameObj.coverUrl || "",
       gameId
@@ -212,6 +216,7 @@ class GamesService {
         is_digital,
         is_finished,
         is_backlog,
+        is_playing,
         notes,
         coverurl
     FROM game WHERE id = ?`;
@@ -244,6 +249,8 @@ class GamesService {
           isDigital = '',
           isBacklog = '',
           isFinished = '',
+          isPlaying = '',
+          // search term
           searchTerm = '',
           // sorting params
           sortBy = '',
@@ -264,6 +271,7 @@ class GamesService {
         ${isDigital || null},
         ${isBacklog || null},
         ${isFinished || null},
+        ${isPlaying || null},
         ${searchTerm ? "'%" + searchTerm + "%'" : "'%%'"},
 
         ${sortBy ? "'" + sortBy + "'" : null},
@@ -302,6 +310,7 @@ class GamesService {
         is_digital,
         is_finished,
         is_backlog,
+        is_playing,
         notes,
         coverurl
       FROM game

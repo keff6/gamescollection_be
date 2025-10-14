@@ -34,6 +34,7 @@ const gamesDataSanitizer = (games) => {
     g.isDigital = g.is_digital;
     g.isFinished = g.is_finished;
     g.isBacklog = g.is_backlog;
+    g.isPlaying = g.is_playing;
     g.coverUrl = g.coverurl;
     delete g.id_console;
     delete g.is_new;
@@ -43,6 +44,7 @@ const gamesDataSanitizer = (games) => {
     delete g.coverurl;
     delete g.is_finished;
     delete g.is_backlog;
+    delete g.is_playing;
   })
 }
 
