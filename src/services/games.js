@@ -49,7 +49,7 @@ class GamesService {
 
     const insertQuery =  `
       INSERT INTO game(id, title, id_console, saga, year, developer, publisher, is_new, is_complete, is_wishlist, is_digital, is_finished, is_backlog, is_playing, notes, coverurl)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     const data = [
       newGameId,
@@ -126,7 +126,7 @@ class GamesService {
     const data = [
       gameObj.title.replace(/'/g, "'"),
       gameObj.consoleId,
-      gameObj.saga || "[]",
+      gameObj.saga.length > 0 ? gameObj.saga : "[]",
       gameObj.year || "",
       gameObj.developer || "",
       gameObj.publisher || "",
@@ -170,7 +170,6 @@ class GamesService {
 
       throw new Error("Something went wrong!");
     } 
-    
   }
 
   /**
