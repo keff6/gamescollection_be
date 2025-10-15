@@ -126,7 +126,7 @@ class GamesService {
     const data = [
       gameObj.title.replace(/'/g, "'"),
       gameObj.consoleId,
-      gameObj.saga.length > 0 ? gameObj.saga : "[]",
+      gameObj.saga || "[]",
       gameObj.year || "",
       gameObj.developer || "",
       gameObj.publisher || "",
