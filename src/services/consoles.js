@@ -1,8 +1,12 @@
 const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
-const { ERROR_CODES } = require('../utils/constants')
+const { ERROR_CODES, ACTION_TYPE, TABLE } = require('../utils/constants')
+const LoggingService = require('./logging')
 
 class ConsolesService {
+  constructor() {
+    this.loggingService = new LoggingService(); // one instance shared across methods
+  }
   /**
    *  GET ALL CONSOLES
    */
@@ -49,13 +53,15 @@ class ConsolesService {
   /**
    *  ADD CONSOLE
    */
-  async add(consoleObj) {
+  async add(req) {
+    const { userid, body: consoleObj } = req;
+    const newConsoleId = uuidv4();
     const insertQuery =  `
       INSERT INTO console(id, name, id_brand, year, generation, is_portable, logourl, consoleurl)
       VALUES(?,?,?,?,?,?,?,?)`;
     
     const data = [
-      uuidv4(),
+      newConsoleId,
       consoleObj.name,
       consoleObj.brandId,
       consoleObj.year || "",
@@ -63,10 +69,18 @@ class ConsolesService {
       consoleObj.isPortable || 0,
       consoleObj.logoUrl || "",
       consoleObj.consoleUrl || ""
-    ]
+    ];
     
     try {
-      await dbConnection.query(insertQuery, data);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.INSERT,
+        TABLE.CONSOLE,
+        insertQuery,
+        data,
+        userid,
+        newConsoleId
+      );
+
       return "Added succesfully!";
     } catch(err) {
       console.log(err)
@@ -80,7 +94,8 @@ class ConsolesService {
   /**
    *  UPDATE CONSOLE
    */
-  async update(consoleId, consoleObj) {
+  async update(req) {
+    const { params: { id: consoleId }, body: consoleObj, userid} = req;
     const updateQuery =  `
       UPDATE console
         SET name = ?,
@@ -104,7 +119,15 @@ class ConsolesService {
     ];
 
     try {
-      await dbConnection.query(updateQuery, data);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.UPDATE,
+        TABLE.CONSOLE,
+        updateQuery,
+        data,
+        userid,
+        consoleId
+      );
+
       return "Updated succesfully!";
     } catch(err) {
       console.log(err)
@@ -118,11 +141,18 @@ class ConsolesService {
   /**
    *  REMOVE CONSOLE
    */
-  async remove(consoleId) {
+  async remove(consoleId, userId) {
     const removeConsoleQuery = `DELETE FROM console WHERE id = ?`;
 
     try {
-      await dbConnection.query(removeConsoleQuery, [consoleId]);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.DELETE,
+        TABLE.CONSOLE,
+        removeConsoleQuery,
+        [consoleId],
+        userId,
+        consoleId
+      );
       return "Removed succesfully!";
     } catch(err) {
       if(err.code === ERROR_CODES.IS_REFERENCED) throw new Error(ERROR_CODES.IS_REFERENCED);

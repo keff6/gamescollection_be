@@ -66,7 +66,7 @@ const add = async (req, res, next) => {
     }
 
     const gamesService = new GamesService()
-    const message = await gamesService.add(req.body)
+    const message = await gamesService.add(req)
     res.status(201).send(message)
   } catch(error) {
     next(error)
@@ -85,9 +85,8 @@ const update = async (req, res, next) => {
       return
     }
 
-    const { params: { id: gameId }} = req;
     const gamesService = new GamesService()
-    const message = await gamesService.update(gameId, req.body)
+    const message = await gamesService.update(req)
     res.send(message)
   } catch(error) {
     next(error)
@@ -99,9 +98,9 @@ const update = async (req, res, next) => {
  */
 const remove = async (req, res, next) => {
   try {
-    const { params: { id: gameId }} = req;
+    const { params: { id: gameId }, userid } = req;
     const gamesService = new GamesService()
-    const message = await gamesService.remove(gameId)
+    const message = await gamesService.remove(gameId, userid)
     res.send(message)
   } catch (error) {
     next(error)

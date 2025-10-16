@@ -43,7 +43,7 @@ const add = async (req, res, next) => {
     }
     
     const brandsService = new BrandsService()
-    const message = await brandsService.add(req.body)
+    const message = await brandsService.add(req)
     res.status(201).send(message)
   } catch(error) {
     next(error)
@@ -62,9 +62,8 @@ const update = async (req, res, next) => {
       return
     }
 
-    const { params: { id: brandId }} = req;
     const brandsService = new BrandsService()
-    const message = await brandsService.update(brandId, req.body)
+    const message = await brandsService.update(req)
     res.send(message)
   } catch(error) {
     next(error)
@@ -76,9 +75,9 @@ const update = async (req, res, next) => {
  */
 const remove = async (req, res, next) => {
   try {
-    const { params: { id: brandId }} = req;
+    const { params: { id: brandId }, userid } = req;
     const brandsService = new BrandsService()
-    const message = await brandsService.remove(brandId)
+    const message = await brandsService.remove(brandId, userid)
     res.send(message)
   } catch (error) {
     next(error)

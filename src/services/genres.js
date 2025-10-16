@@ -1,17 +1,34 @@
 const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
-const { ERROR_CODES } = require('../utils/constants')
+const { ERROR_CODES, ACTION_TYPE, TABLE } = require('../utils/constants')
+const LoggingService = require('./logging')
 
 class GenresService {
+  constructor() {
+    this.loggingService = new LoggingService(); // one instance shared across methods
+  }
   /**
    *  ADD GENRE
    */
-  async add(genreObj) {
+  async add(req) {
+    const { userid, body: genreObj } = req;
+    const newGenreId = uuidv4();
     const insertQuery =  `INSERT INTO genre(id, name) VALUES(?, ?)`;
-    
-    const data = [uuidv4(), genreObj.name.replace(/'/g, "'")]
+    const data = [
+      newGenreId,
+      genreObj.name.replace(/'/g, "'"),
+    ];
+
     try {
-      await dbConnection.query(insertQuery, data);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.INSERT,
+        TABLE.GENRE,
+        insertQuery,
+        data,
+        userid,
+        newGenreId
+      );
+
       return "Added succesfully!";
     } catch(err) {
       console.log(err)
@@ -25,12 +42,21 @@ class GenresService {
   /**
    *  UPDATE GENRE
    */
-  async update(genreId, genreObj) {
+  async update(req) {
+    const { params: { id: genreId }, body: genreObj, userid} = req;
     const updateQuery = `UPDATE genre SET name = ? where id = ?`;
     const data = [genreObj.name.replace(/'/g, "'"), genreId];
 
     try {
-      await dbConnection.query(updateQuery, data);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.UPDATE,
+        TABLE.GENRE,
+        updateQuery,
+        data,
+        userid,
+        genreId
+      );
+      // await dbConnection.query(updateQuery, data);
       return "Updated succesfully!";
     } catch(err) {
       if(err.code === ERROR_CODES.DUPLICATED) throw new Error(ERROR_CODES.DUPLICATED);
@@ -42,11 +68,18 @@ class GenresService {
   /**
    *  REMOVE GENRE
    */
-  async remove(genreId) {
+  async remove(genreId, userId) {
     const removeQuery = `DELETE FROM genre where id = ?`;
 
     try {
-      await dbConnection.query(removeQuery, [genreId]);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.DELETE,
+        TABLE.GENRE,
+        removeQuery,
+        [genreId],
+        userId,
+        genreId
+      );
       return "Removed succesfully!";
     } catch(err) {
       if(err.code === ERROR_CODES.IS_REFERENCED) throw new Error(ERROR_CODES.IS_REFERENCED);

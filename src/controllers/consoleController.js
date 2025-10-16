@@ -44,7 +44,7 @@ const add = async (req, res, next) => {
     }
 
     const consolesService = new ConsolesService()
-    const message = await consolesService.add(req.body)
+    const message = await consolesService.add(req)
     res.status(201).send(message)
   } catch(error) {
     next(error)
@@ -63,9 +63,8 @@ const update = async (req, res, next) => {
       return
     }
 
-    const { params: { id: consoleId }} = req;
     const consolesService = new ConsolesService()
-    const message = await consolesService.update(consoleId, req.body)
+    const message = await consolesService.update(req)
     res.send(message)
   } catch(error) {
     next(error)
@@ -77,9 +76,9 @@ const update = async (req, res, next) => {
 */
 const remove = async (req, res, next) => {
   try {
-    const { params: { id: consoleId }} = req;
+    const { params: { id: consoleId }, userid} = req;
     const consolesService = new ConsolesService()
-    const message = await consolesService.remove(consoleId)
+    const message = await consolesService.remove(consoleId, userid)
     res.send(message)
   } catch (error) {
     next(error)

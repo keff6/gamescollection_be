@@ -1,8 +1,12 @@
 const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
-const { ERROR_CODES } = require('../utils/constants')
+const { ERROR_CODES, ACTION_TYPE, TABLE } = require('../utils/constants')
+const LoggingService = require('./logging')
 
 class GamesService {
+  constructor() {
+    this.loggingService = new LoggingService(); // one instance shared across methods
+  }
   /**
    *  GET ALL GAMES
    */
@@ -44,7 +48,8 @@ class GamesService {
   /**
    *  ADD GAME
    */
-  async add(gameObj) {
+  async add(req) {
+    const { userid, body: gameObj } = req;
     const newGameId = uuidv4();
 
     const insertQuery =  `
@@ -87,6 +92,15 @@ class GamesService {
         }
       }
 
+      // logging
+      await this.loggingService.logAction(
+        ACTION_TYPE.INSERT,
+        TABLE.GAME,
+        userid,
+        newGameId,
+        dbConnection
+      );
+
       // commit transaction
       await dbConnection.commit();
 
@@ -103,7 +117,9 @@ class GamesService {
   /**
    *  UPDATE GAME
    */
-  async update(gameId, gameObj) {
+  async update(req) {
+    const { params: { id: gameId }, body: gameObj, userid} = req;
+
     const updateQuery =  `
       UPDATE game
         SET title = ?,
@@ -160,6 +176,15 @@ class GamesService {
         }
       }
 
+      // logging
+      await this.loggingService.logAction(
+        ACTION_TYPE.UPDATE,
+        TABLE.GAME,
+        userid,
+        gameId,
+        dbConnection
+      );
+
       // commit transaction
       await dbConnection.commit();
 
@@ -175,7 +200,7 @@ class GamesService {
   /**
    *  REMOVE GAME
    */
-  async remove(gameId) {
+  async remove(gameId, userId) {
     const removeQuery = `DELETE FROM game where id = ?`;
 
     try {
@@ -187,6 +212,15 @@ class GamesService {
 
       await dbConnection.query(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
       await dbConnection.query(removeQuery, [gameId]);
+
+      // logging
+      await this.loggingService.logAction(
+        ACTION_TYPE.DELETE,
+        TABLE.GAME,
+        userId,
+        gameId,
+        dbConnection
+      );
 
       // commit transaction
       await dbConnection.commit();

@@ -1,22 +1,35 @@
 const dbConnection = require("../config/db");
 const { v4: uuidv4 } = require('uuid');
-const { ERROR_CODES } = require('../utils/constants')
+const { ERROR_CODES, ACTION_TYPE, TABLE } = require('../utils/constants')
+const LoggingService = require('./logging')
 
 class BrandsService {
+  constructor() {
+    this.loggingService = new LoggingService(); // one instance shared across methods
+  }
   /**
    *  ADD BRAND
    */
-  async add(brandObj) {
+  async add(req) {
+    const { userid, body: brandObj } = req;
     const insertQuery =  `INSERT INTO brand(id, name, origin, logourl) VALUES(?,?,?,?)`;
+    const newBrandId = uuidv4();
     const data = [
-      uuidv4(),
+      newBrandId,
       brandObj.name,
       brandObj.origin || "",
       brandObj.logoUrl || ""
     ];
     
     try {
-      await dbConnection.query(insertQuery, data);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.INSERT,
+        TABLE.BRAND,
+        insertQuery,
+        data,
+        userid,
+        newBrandId
+      );
       return "Added succesfully!";
     } catch(err) {
       console.log(err)
@@ -30,7 +43,8 @@ class BrandsService {
   /**
    *  UPDATE BRAND
    */
-  async update(brandId, brandObj) {
+  async update(req) {
+    const { params: { id: brandId }, body: brandObj, userid} = req;
     const updateQuery = `UPDATE brand SET name = ?, origin = ?, logourl = ? WHERE id = ?`;
     const data = [
       brandObj.name,
@@ -40,7 +54,14 @@ class BrandsService {
     ];
 
     try {
-      await dbConnection.query(updateQuery, data);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.UPDATE,
+        TABLE.BRAND,
+        updateQuery,
+        data,
+        userid,
+        brandId
+      );
       return "Updated succesfully!";
     } catch(err) {
       console.log(err)
@@ -53,11 +74,18 @@ class BrandsService {
   /**
    *  REMOVE BRAND
    */
-  async remove(brandId) {
+  async remove(brandId, userid) {
     const removeQuery = `DELETE FROM brand WHERE id = ?`;
     
     try {
-      await dbConnection.query(removeQuery, [brandId]);
+      await this.loggingService.actionWithLogging(
+        ACTION_TYPE.DELETE,
+        TABLE.BRAND,
+        removeQuery,
+        [brandId],
+        userid,
+        brandId
+      );
       return "Removed succesfully!";
     } catch(err) {
       if(err.code === ERROR_CODES.IS_REFERENCED) throw new Error(ERROR_CODES.IS_REFERENCED);

@@ -41,7 +41,7 @@ const add = async (req, res, next) => {
     }
 
     const genresService = new GenresService()
-    const message = await genresService.add(req.body)
+    const message = await genresService.add(req)
     res.status(201).send(message)
   } catch(error) {
     next(error)
@@ -60,9 +60,8 @@ const update = async (req, res, next) => {
       return
     }
 
-    const { params: { id: genreId }} = req;
     const genresService = new GenresService()
-    const message = await genresService.update(genreId, req.body)
+    const message = await genresService.update(req)
     res.send(message)
   } catch(error) {
     next(error)
@@ -74,9 +73,9 @@ const update = async (req, res, next) => {
  */
 const remove = async (req, res, next) => {
   try {
-    const { params: { id: genreId }} = req;
+    const { params: { id: genreId }, userid } = req;
     const genresService = new GenresService()
-    const message = await genresService.remove(genreId)
+    const message = await genresService.remove(genreId, userid)
     res.send(message)
   } catch (error) {
     next(error)

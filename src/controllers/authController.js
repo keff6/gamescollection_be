@@ -31,7 +31,10 @@ const login = async (req, res, next) => {
       );
 
       const refreshToken = jwt.sign(
-        { "username": foundUser.username },
+        { 
+          "userid": foundUser.id,
+          "username": foundUser.username
+        },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '10h' }
       );
@@ -83,7 +86,10 @@ const refreshToken = async (req, res, next) => {
         if(err || foundUser.username !== decoded.username) return res.sendStatus(403);
         
         const accessToken = jwt.sign(
-          { "username": decoded.username },
+          { 
+            "userid": decoded.userid,
+            "username": decoded.username
+          },
           process.env.ACCESS_TOKEN_SECRET,
           { expiresIn: "10h"}
         )
@@ -129,5 +135,5 @@ const logout = async (req, res, next) => {
 module.exports = {
   login,
   refreshToken,
-  logout
+  logout,
 }
