@@ -29,12 +29,12 @@ class LoggingService {
       await dbConnection.query(actionQuery, data);
 
       // logging
-      await LoggingService.logAction(action, tableName, userId, recordId, dbConnection);
+      await this.logAction(action, tableName, userId, recordId, dbConnection);
 
       // commit transaction
       await dbConnection.commit();
     } catch(error) {
-      throw new Error(error);
+      throw error;
     }
   }
 }
