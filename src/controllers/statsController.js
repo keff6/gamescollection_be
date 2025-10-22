@@ -1,12 +1,12 @@
-const InfoService = require('../services/info')
+const StatsService = require('../services/stats')
 
 /**
  *  GET TOTALS
  */
 const getTotals = async (req, res, next) => {
   try {
-    const infoService = new InfoService()
-    const totals = await infoService.getTotals()
+    const statsService = new StatsService()
+    const totals = await statsService.getTotals()
     res.send(totals)
   } catch(error) {
     next(error)
@@ -18,8 +18,8 @@ const getTotals = async (req, res, next) => {
  */
 const getTotalGamesByConsole = async (req, res, next) => {
   try {
-    const infoService = new InfoService()
-    const totalGamesByConsole = await infoService.getTotalGamesByConsole()
+    const statsService = new StatsService()
+    const totalGamesByConsole = await statsService.getTotalGamesByConsole()
     res.send(totalGamesByConsole)
   } catch(error) {
     next(error)
@@ -31,8 +31,8 @@ const getTotalGamesByConsole = async (req, res, next) => {
  */
 const getLatestAdditions = async (req, res, next) => {
   try {
-    const infoService = new InfoService()
-    const latestAdditions = await infoService.getLatestAdditions()
+    const statsService = new StatsService()
+    const latestAdditions = await statsService.getLatestAdditions()
     res.send(latestAdditions)
   } catch(error) {
     next(error)
@@ -44,8 +44,8 @@ const getLatestAdditions = async (req, res, next) => {
  */
 const getPlayingGames = async (req, res, next) => {
   try {
-    const infoService = new InfoService()
-    const playingGames = await infoService.getPlayingGames()
+    const statsService = new StatsService()
+    const playingGames = await statsService.getPlayingGames()
     res.send(playingGames)
   } catch(error) {
     next(error)
@@ -57,8 +57,8 @@ const getPlayingGames = async (req, res, next) => {
  */
 const getGenresDistribution = async (req, res, next) => {
   try {
-    const infoService = new InfoService()
-    const genresDist = await infoService.getGenresDistribution()
+    const statsService = new StatsService()
+    const genresDist = await statsService.getGenresDistribution()
     res.send(genresDist)
   } catch(error) {
     next(error)
@@ -70,8 +70,8 @@ const getGenresDistribution = async (req, res, next) => {
  */
 const getGamesByCondition = async (req, res, next) => {
   try {
-    const infoService = new InfoService()
-    const gamesByCondition = await infoService.getGamesByCondition()
+    const statsService = new StatsService()
+    const gamesByCondition = await statsService.getGamesByCondition()
     res.send(gamesByCondition)
   } catch(error) {
     next(error)

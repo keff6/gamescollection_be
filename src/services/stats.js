@@ -1,6 +1,6 @@
 const dbConnection = require("../config/db");
 
-class InfoService {
+class StatsService {
   /**
    *  GET TOTALS
    */
@@ -115,4 +115,4 @@ class InfoService {
   
 }
 
-module.exports = InfoService
+module.exports = StatsService
