@@ -78,6 +78,18 @@ const getGamesByCondition = async (req, res, next) => {
   }
 }
 
+/**
+ *  GET TOP 5 CONSOLES BY GAMES
+ */
+const getTop5Consoles = async (req, res, next) => {
+  try {
+    const statsService = new StatsService()
+    const topConsoles = await statsService.getTop5Consoles()
+    res.send(topConsoles)
+  } catch(error) {
+    next(error)
+  }
+}
 
 
 module.exports = {
@@ -87,4 +99,5 @@ module.exports = {
   getPlayingGames,
   getGenresDistribution,
   getGamesByCondition,
+  getTop5Consoles,
 }

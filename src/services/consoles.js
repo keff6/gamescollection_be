@@ -29,6 +29,7 @@ class ConsolesService {
     const selectQuery = `SELECT
       c.id,
       c.name,
+      c.short_name,
       c.id_brand,
       c.year,
       c.generation,
@@ -57,12 +58,13 @@ class ConsolesService {
     const { userid, body: consoleObj } = req;
     const newConsoleId = uuidv4();
     const insertQuery =  `
-      INSERT INTO console(id, name, id_brand, year, generation, is_portable, logourl, consoleurl)
-      VALUES(?,?,?,?,?,?,?,?)`;
+      INSERT INTO console(id, name, short_name, id_brand, year, generation, is_portable, logourl, consoleurl)
+      VALUES(?,?,?,?,?,?,?,?,?)`;
     
     const data = [
       newConsoleId,
       consoleObj.name,
+      consoleObj.shortName || "",
       consoleObj.brandId,
       consoleObj.year || "",
       consoleObj.generation || "",
@@ -99,6 +101,7 @@ class ConsolesService {
     const updateQuery =  `
       UPDATE console
         SET name = ?,
+        short_name = ?,
         id_brand = ?,
         year = ?,
         generation = ?,
@@ -109,6 +112,7 @@ class ConsolesService {
 
     const data = [
       consoleObj.name,
+      consoleObj.shortName || "",
       consoleObj.brandId,
       consoleObj.year || "",
       consoleObj.generation || "",
@@ -167,6 +171,7 @@ class ConsolesService {
     const selectQuery = `SELECT
       c.id,
       c.name,
+      c.short_name,
       c.id_brand,
       c.year,
       c.generation,
@@ -197,6 +202,7 @@ class ConsolesService {
     const selectQuery = `SELECT
       id,
       name,
+      short_name,
       id_brand,
       year,
       generation,

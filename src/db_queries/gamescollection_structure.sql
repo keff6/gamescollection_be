@@ -12,6 +12,7 @@ CREATE TABLE `gamescollection`.`brand` (
 CREATE TABLE `gamescollection`.`console` (
     `id` VARCHAR(36) NOT NULL,
     `name` VARCHAR(50) NOT NULL,
+    `short_name` VARCHAR(50) NOT NULL,
     `id_brand` VARCHAR(36) NOT NULL,
     `year` VARCHAR(4) NULL,
     `generation` VARCHAR(45) NULL,
