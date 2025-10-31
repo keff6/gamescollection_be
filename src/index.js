@@ -2,14 +2,7 @@ const express = require("express");
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const genreRoutes = require('./routes/genre');
-const brandRoutes = require('./routes/brand');
-const consoleRoutes = require('./routes/console');
-const gameRoutes = require('./routes/game');
-const userRoutes = require('./routes/user');
-const authRoutes = require('./routes/auth');
-const statsRoutes = require('./routes/stats');
-const exportRoutes = require('./routes/export');
+const apiRoutes = require('./routes/index.js');
 const errorHandler = require('./middleware/errorHandler')
 const credentials = require('./middleware/credentials')
 const corsOptions = require('./config/corsOptions')
@@ -28,14 +21,7 @@ app.use(bodyParser.json())
 app.use(cookieParser());
 
 // routes
-app.use(genreRoutes);
-app.use(brandRoutes);
-app.use(consoleRoutes);
-app.use(gameRoutes);
-app.use(userRoutes);
-app.use(authRoutes);
-app.use(statsRoutes);
-app.use(exportRoutes);
+app.use('/api/v1', apiRoutes);
 
 // custom error handler middleware
 app.use(errorHandler);

@@ -6,11 +6,11 @@ const userController = require('../controllers/userController')
 /*
   Register new user
 */
-router.post('/users/add', [
+router.post('/add', [
   body('name').notEmpty(),
   body('userName').notEmpty(),
   body('password').notEmpty(),
 ], userController.add);
-router.put('/users/changePassword', body('newPassword').notEmpty(), body('userId').notEmpty(), userController.changePassword)
+router.put('/changePassword', body('newPassword').notEmpty(), body('userId').notEmpty(), userController.changePassword)
 
 module.exports = router

@@ -4,10 +4,10 @@ const router = new express.Router()
 const verifyJWT = require('../middleware/verifyJWT') 
 const genreController = require('../controllers/genreController')
 
-router.get('/genres', genreController.getAll)
-router.get('/genres/:id', verifyJWT, genreController.getById)
-router.post('/genres/add', verifyJWT, body('name').notEmpty(), genreController.add)
-router.put('/genres/edit/:id', verifyJWT, body('name').notEmpty(), genreController.update)
-router.delete('/genres/remove/:id', verifyJWT, genreController.remove)
+router.get('/all', genreController.getAll)
+router.get('/:id', verifyJWT, genreController.getById)
+router.post('/add', verifyJWT, body('name').notEmpty(), genreController.add)
+router.put('/edit/:id', verifyJWT, body('name').notEmpty(), genreController.update)
+router.delete('/remove/:id', verifyJWT, genreController.remove)
 
 module.exports = router
