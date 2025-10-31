@@ -30,6 +30,21 @@ class UsersService {
     } 
     
   }
+
+  /**
+   *  CHANGE PASSWORD
+   */
+  async changePassword(userId, newPassword) {
+    const passwordHash = await bcrypt.hash(newPassword, 8);
+    const updateQuery =  `UPDATE user SET password=? WHERE id=?`;
+    
+    try {
+      await dbConnection.query(updateQuery, [passwordHash, userId]);
+      return "Changed succesfully!";
+    } catch(err) {
+      throw new Error(err);
+    } 
+  }
 }
 
 module.exports = UsersService

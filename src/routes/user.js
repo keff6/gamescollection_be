@@ -11,5 +11,6 @@ router.post('/users/add', [
   body('userName').notEmpty(),
   body('password').notEmpty(),
 ], userController.add);
+router.put('/users/changePassword', body('newPassword').notEmpty(), body('userId').notEmpty(), userController.changePassword)
 
 module.exports = router
