@@ -21,7 +21,7 @@ const login = async (req, res, next) => {
     const foundUser = await authService.checkUserByUsername(username)
 
     if(!foundUser || !(await bcrypt.compare(password, foundUser.password))){
-      res.status(400).send("Username and/or Password Incorrect!")
+      res.status(535).send("Username and/or Password Incorrect!")
     } else {
       // create JWT
       const accessToken = jwt.sign(
