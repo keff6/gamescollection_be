@@ -10,12 +10,12 @@ class StatsService {
 	    count(c.id) AS totalConsoles,
       sum(CASE When c.is_portable = 1 then 1 else 0 end) AS portable,
       (SELECT 
-      CONCAT(b.name,' ',(CASE WHEN c.short_name IS NOT NULL THEN c.short_name ELSE c.name END)) AS name
+      CONCAT(b.name,' ',(CASE WHEN c.short_name IS NOT NULL THEN c.short_name ELSE c.name END),' (',c.year,')') AS name
       FROM console AS c, brand AS b
       WHERE c.id_brand = b.id
       ORDER BY c.year ASC LIMIT 1) AS oldestConsole,
       (SELECT 
-      CONCAT(b.name,' ',(CASE WHEN c.short_name IS NOT NULL THEN c.short_name ELSE c.name END)) AS name
+      CONCAT(b.name,' ',(CASE WHEN c.short_name IS NOT NULL THEN c.short_name ELSE c.name END),' (',c.year,')') AS name
       FROM console AS c, brand AS b
       WHERE c.id_brand = b.id
       ORDER BY c.year DESC LIMIT 1) AS newestConsole
