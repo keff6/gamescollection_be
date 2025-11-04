@@ -78,9 +78,6 @@ class GamesService {
     const gameGenres = gameObj.genres || []
 
     try {
-      // SET SQL transaction
-      await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
-
       // begin transaction
       await dbConnection.beginTransaction();
 
@@ -161,9 +158,6 @@ class GamesService {
     const gameGenres = gameObj.genres || [];
 
     try {
-      // SET SQL transaction
-      await dbConnection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
-
       // begin transaction
       await dbConnection.beginTransaction();
 
