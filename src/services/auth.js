@@ -8,7 +8,7 @@ class AuthService {
     const selectQuery =  `SELECT * FROM user WHERE username = ?`;
     
     try {
-      const user = await dbConnection.query(selectQuery, [username]);
+      const [user] = await dbConnection.query(selectQuery, [username]);
       return user[0] || null;
     } catch(err) {
       throw new Error(err);
@@ -22,7 +22,7 @@ class AuthService {
       const selectQuery =  `SELECT * FROM user WHERE refresh_token = ?`;
       
       try {
-        const user = await dbConnection.query(selectQuery, [token]);
+        const [user] = await dbConnection.query(selectQuery, [token]);
         return user[0] || null;
       } catch(err) {
         throw new Error(err);

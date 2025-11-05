@@ -94,7 +94,7 @@ class GenresService {
     const selectQuery = 'SELECT id,name FROM genre ORDER BY name ASC';
 
     try {
-      const rows = await dbConnection.query(selectQuery);
+      const [rows] = await dbConnection.query(selectQuery);
       return rows;
     } catch(err) {
       throw new Error(err);
@@ -109,7 +109,7 @@ class GenresService {
     const selectQuery = `SELECT id,name FROM genre WHERE id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery, [genreId]);
+      const [result] = await dbConnection.query(selectQuery, [genreId]);
       const genre = result[0];
       return genre || {};
     } catch(err) {

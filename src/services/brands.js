@@ -104,7 +104,7 @@ class BrandsService {
       GROUP BY b.id`;
 
     try {
-      const rows = await dbConnection.query(selectQuery);
+      const [rows] = await dbConnection.query(selectQuery);
       return rows;
     } catch(err) {
       throw new Error(err);
@@ -119,7 +119,7 @@ class BrandsService {
     const selectQuery = `SELECT id, name, origin, logourl FROM brand WHERE id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery, [brandId]);
+      const [result] = await dbConnection.query(selectQuery, [brandId]);
       const brand = result[0];
       return brand || {};
     } catch(err) {

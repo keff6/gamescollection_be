@@ -21,20 +21,28 @@ class LoggingService {
   }
 
   async actionWithLogging(action, tableName, actionQuery, data, userId, recordId) {
+
+    // Create a dedicated connection from the Pool
+    const connection = await dbConnection.getConnection();
+
     try {
       // begin transaction
-      await dbConnection.beginTransaction();
+      await connection.beginTransaction();
 
       // query
-      await dbConnection.query(actionQuery, data);
+      await connection.query(actionQuery, data);
 
       // logging
-      await this.logAction(action, tableName, userId, recordId, dbConnection);
+      await this.logAction(action, tableName, userId, recordId, connection);
 
       // commit transaction
-      await dbConnection.commit();
+      await connection.commit();
     } catch(error) {
+      console.log({error})
+      connection.rollback();
       throw error;
+    } finally {
+      connection.release();
     }
   }
 }

@@ -1,9 +1,6 @@
-const mysql= require("mysql2");
-const util = require("util"); 
+const mysql = require("mysql2/promise");
 
-let dbConnection;
-
-dbConnection = mysql.createPool({
+const dbConnectionPool = mysql.createPool({
     host: process.env.HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
@@ -18,15 +15,8 @@ dbConnection = mysql.createPool({
     enableKeepAlive: true
 });
 
-// Wrapper to use ASYNC / AWAIT on Mysql queries
-dbConnection.query = util.promisify(dbConnection.query).bind(dbConnection);
+dbConnectionPool.on('error', err => {
+  console.error('MySQL Pool Error:', err);
+});
 
-// dbConnection.connect((err) => {
-//   if(err){
-//     console.log('Error connecting to Db');
-//     return;
-//   }
-//   console.log('Connection established');
-// });
-
-module.exports = dbConnection;
+module.exports = dbConnectionPool;

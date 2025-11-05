@@ -31,11 +31,11 @@ class GamesService {
       FROM game LIMIT ? OFFSET ?`;
 
     try {
-      const countResult = await dbConnection.query('SELECT COUNT(*) as count FROM game');
+      const [countResult] = await dbConnection.query('SELECT COUNT(*) as count FROM game');
       const totalItems = countResult[0].count;
 
 
-      const games = await dbConnection.query(selectQuery, [limit, offset]);
+      const [games] = await dbConnection.query(selectQuery, [limit, offset]);
       const totalPages = Math.ceil(totalItems / limit);
 
       return [games, totalPages, totalItems]
@@ -77,15 +77,18 @@ class GamesService {
     
     const gameGenres = gameObj.genres || []
 
+    // Create a dedicated connection from the Pool
+    const connection = await dbConnection.getConnection();
+
     try {
       // begin transaction
-      await dbConnection.beginTransaction();
+      await connection.beginTransaction();
 
-      await dbConnection.query(insertQuery, data);
+      await connection.query(insertQuery, data);
 
       if (gameGenres.length > 0) {
         for(let genreId of gameGenres) {
-          await dbConnection.query(`INSERT INTO game_x_genre (id_game, id_genre) VALUES ('${newGameId}', '${genreId}')`);
+          await connection.query(`INSERT INTO game_x_genre (id_game, id_genre) VALUES ('${newGameId}', '${genreId}')`);
         }
       }
 
@@ -95,19 +98,21 @@ class GamesService {
         TABLE.GAME,
         userid,
         newGameId,
-        dbConnection
+        connection
       );
 
       // commit transaction
-      await dbConnection.commit();
+      await connection.commit();
 
       return "Added succesfully!";
     } catch(err) {
-      dbConnection.rollback();
+      connection.rollback();
       if(err.code === ERROR_CODES.DUPLICATED) throw new Error(ERROR_CODES.DUPLICATED);
 
       throw new Error("Something went wrong!");
-    } 
+    } finally {
+      connection.release();
+    }
     
   }
 
@@ -157,16 +162,19 @@ class GamesService {
 
     const gameGenres = gameObj.genres || [];
 
+    // Create a dedicated connection from the Pool
+    const connection = await dbConnection.getConnection();
+
     try {
       // begin transaction
-      await dbConnection.beginTransaction();
+      await connection.beginTransaction();
 
-      await dbConnection.query(updateQuery, data);
-      await dbConnection.query(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
+      await connection.query(updateQuery, data);
+      await connection.query(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
 
       if (gameGenres.length > 0) {
         for(let genreId of gameGenres) {
-          await dbConnection.query(`INSERT INTO game_x_genre (id_game, id_genre) VALUES (?, ?)`, [gameId, genreId]);
+          await connection.query(`INSERT INTO game_x_genre (id_game, id_genre) VALUES (?, ?)`, [gameId, genreId]);
         }
       }
 
@@ -176,19 +184,21 @@ class GamesService {
         TABLE.GAME,
         userid,
         gameId,
-        dbConnection
+        connection
       );
 
       // commit transaction
-      await dbConnection.commit();
+      await connection.commit();
 
       return "Updated succesfully!";
     } catch(err) {
-      dbConnection.rollback();
+      connection.rollback();
       if(err.code === ERROR_CODES.DUPLICATED) throw new Error(ERROR_CODES.DUPLICATED);
 
       throw new Error("Something went wrong!");
-    } 
+    } finally {
+      connection.release();
+    }
   }
 
   /**
@@ -197,12 +207,15 @@ class GamesService {
   async remove(gameId, userId) {
     const removeQuery = `DELETE FROM game where id = ?`;
 
+    // Create a dedicated connection from the Pool
+    const connection = await dbConnection.getConnection();
+
     try {
       // begin transaction
-      await dbConnection.beginTransaction();
+      await connection.beginTransaction();
 
-      await dbConnection.query(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
-      await dbConnection.query(removeQuery, [gameId]);
+      await connection.query(`DELETE FROM game_x_genre where id_game = ?`, [gameId])
+      await connection.query(removeQuery, [gameId]);
 
       // logging
       await this.loggingService.logAction(
@@ -210,16 +223,18 @@ class GamesService {
         TABLE.GAME,
         userId,
         gameId,
-        dbConnection
+        connection
       );
 
       // commit transaction
-      await dbConnection.commit();
+      await connection.commit();
 
       return "Removed succesfully!";
     } catch(err) {
       throw new Error(err);
-    } 
+    } finally {
+      connection.release();
+    }
   }
 
   /**
@@ -246,7 +261,7 @@ class GamesService {
     FROM game WHERE id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery, [gameId]);
+      const [result] = await dbConnection.query(selectQuery, [gameId]);
       const console = result[0];
       return console || {};
     } catch(err) {
@@ -304,7 +319,7 @@ class GamesService {
         ${offset ? "'" + offset + "'" : null})`;
 
       try {
-      const [games, totalGames] = await dbConnection.query(selectQuery, [limit, offset]);
+      const [[games, totalGames]] = await dbConnection.query(selectQuery, [limit, offset]);
       const totalItems = totalGames[0].row_count;
       const totalPages = Math.ceil(totalItems / limit);
 
@@ -342,7 +357,7 @@ class GamesService {
       AND id_console=?`;
 
     try {
-      const games = await dbConnection.query(selectQuery,[searchPattern,consoleId]);
+      const [games] = await dbConnection.query(selectQuery,[searchPattern,consoleId]);
       return games;
     } catch(err) {
       throw new Error(err);
@@ -362,7 +377,7 @@ class GamesService {
       AND title = ?`;
 
     try {
-      const found = await dbConnection.query(selectQuery, [consoleId, title]);
+      const [found] = await dbConnection.query(selectQuery, [consoleId, title]);
       return found[0];
     } catch(err) {
       throw new Error(err);

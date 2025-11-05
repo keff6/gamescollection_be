@@ -25,9 +25,9 @@ class StatsService {
     const selectBrandsQuery = `SELECT count(0) as totalBrands FROM brand`;
 
     try {
-      const totalConsoles = await dbConnection.query(selectConsolesQuery);
-      const totalGames = await dbConnection.query(selectGamesQuery);
-      const totalBrands = await dbConnection.query(selectBrandsQuery);
+      const [totalConsoles] = await dbConnection.query(selectConsolesQuery);
+      const [totalGames] = await dbConnection.query(selectGamesQuery);
+      const [totalBrands] = await dbConnection.query(selectBrandsQuery);
       return {
         ...totalConsoles[0],
         ...totalGames[0],
@@ -55,7 +55,7 @@ class StatsService {
       ORDER BY c.year ASC`;
 
     try {
-      const totalGamesByConsole = await dbConnection.query(selectQuery);
+      const [totalGamesByConsole] = await dbConnection.query(selectQuery);
       return totalGamesByConsole;
     } catch(err) {
       throw new Error(err);
@@ -77,7 +77,7 @@ class StatsService {
       LIMIT 5`;
 
     try {
-      const latestAdditions = await dbConnection.query(selectQuery);
+      const [latestAdditions] = await dbConnection.query(selectQuery);
       return latestAdditions;
     } catch(err) {
       throw new Error(err);
@@ -100,8 +100,8 @@ class StatsService {
     const totalFinished = 'SELECT count(0) as finishedGames FROM game WHERE is_finished = 1'
 
     try {
-      const playingGames = await dbConnection.query(selectQuery);
-      const finishedGames = await dbConnection.query(totalFinished);
+      const [playingGames] = await dbConnection.query(selectQuery);
+      const [finishedGames] = await dbConnection.query(totalFinished);
       return {
         playingGames,
         ...finishedGames[0],
@@ -124,7 +124,7 @@ class StatsService {
       LIMIT 5`;
 
     try {
-      const genresDist = await dbConnection.query(selectQuery);
+      const [genresDist] = await dbConnection.query(selectQuery);
       return genresDist;
     } catch(err) {
       throw new Error(err);
@@ -144,7 +144,7 @@ class StatsService {
       FROM game`;
 
     try {
-      const [gamesByCondition] = await dbConnection.query(selectQuery);
+      const [[gamesByCondition]] = await dbConnection.query(selectQuery);
       return gamesByCondition;
     } catch(err) {
       throw new Error(err);
@@ -168,7 +168,7 @@ class StatsService {
       LIMIT 5`;
 
     try {
-      const consolesByGames = await dbConnection.query(selectQuery);
+      const [consolesByGames] = await dbConnection.query(selectQuery);
       return consolesByGames;
     } catch(err) {
       throw new Error(err);

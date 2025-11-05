@@ -31,7 +31,7 @@ class ExportService {
         ${isFinished || null})`;
 
     try {
-      const [rows] = await dbConnection.query(selectQuery);
+      const [[rows]] = await dbConnection.query(selectQuery);
       return rows;
     } catch(err) {
       throw new Error(err);

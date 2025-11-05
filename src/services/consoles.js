@@ -14,7 +14,7 @@ class ConsolesService {
     const selectQuery = `SELECT * FROM console`;
 
     try {
-      const consoles = await dbConnection.query(selectQuery);
+      const [consoles] = await dbConnection.query(selectQuery);
       return consoles;
     } catch(err) {
       throw new Error(err);
@@ -42,7 +42,7 @@ class ConsolesService {
     WHERE c.id = ?`;
 
     try {
-      const result = await dbConnection.query(selectQuery, [consoleId]);
+      const [result] = await dbConnection.query(selectQuery, [consoleId]);
       const console = result[0];
       return console || {};
     } catch(err) {
@@ -187,7 +187,7 @@ class ConsolesService {
     ORDER BY c.year ASC`;
 
     try {
-      const consoles = await dbConnection.query(selectQuery, [brandId, type]);
+      const [consoles] = await dbConnection.query(selectQuery, [brandId, type]);
       return consoles;
     } catch(err) {
       throw new Error(err);
@@ -212,7 +212,7 @@ class ConsolesService {
     FROM console WHERE generation = ?`;
 
     try {
-      const consoles = await dbConnection.query(selectQuery, generation);
+      const [consoles] = await dbConnection.query(selectQuery, generation);
       return consoles;
     } catch(err) {
       throw new Error(err);
